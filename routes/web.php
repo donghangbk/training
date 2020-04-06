@@ -11,6 +11,18 @@
 |
 */
 
+Route::group([], function () {
+    Route::resource('users', 'UsersController');
+});
 Route::get('/', function () {
     return view('welcome');
 });
+
+//Route::get('/', function () {
+//    return view('layouts/master');
+//});
+
+Auth::routes();
+
+//Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
