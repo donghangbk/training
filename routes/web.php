@@ -12,17 +12,25 @@
 */
 
 Route::group([], function () {
+
+    // for user
     Route::resource('users', 'UsersController');
-});
-Route::get('/', function () {
-    return view('welcome');
+    Route::post('/deleteUser', 'AjaxController@deleteUser');
+    Route::post('/user/{id}/', 'UsersController@editUser')->name('editUser');
+    Route::any('/profile', 'UsersController@profile')->name("profile");
+    Route::any('/setting', 'UsersController@setting')->name("setting");
+
+    // for timesheet
+    Route::resource('timesheets', 'TimesheetsController');
 });
 
-//Route::get('/', function () {
-//    return view('layouts/master');
-//});
+Route::get('/', function () {
+    return view('dashboard.index');
+});
+Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+
+//Route::get('/', 'DashboardController@index');
+
 
 Auth::routes();
-
-//Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+Route::get('/logout', 'DashboardController@logout')->name('logout');

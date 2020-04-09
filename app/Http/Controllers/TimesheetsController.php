@@ -1,19 +1,30 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Http\Request;
+use App\User;
+use App\Timesheet;
+use App\TimesheetDetail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-class DashboardController extends Controller
+
+class TimesheetsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-        Log::info(Auth::user()->avatar);
-        return view("dashboard.index");
+    public function index()
+    {
+        $timesheets = Timesheet::where("user_id", Auth::id())->orderBy("created_at", 'desc')->get();
+        
+        foreach ($timesheets as &$item) {
+            $countTask = TimesheetDetail::all()->where("timesheet_id", $item["id"])->count();
+            $item["total"] = $countTask;
+        }
+        return view("timesheets.index", compact('timesheets'));
     }
 
     /**
@@ -23,7 +34,7 @@ class DashboardController extends Controller
      */
     public function create()
     {
-        //
+        return view("timesheets.create");
     }
 
     /**
@@ -34,7 +45,23 @@ class DashboardController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = [
+            "user_id" => Auth::user()->id,
+            "issue" => $request["issue"],
+            "next_day" => $request["next_day"],
+            "work_day" => $request["work_day"]
+        ];
+
+        $timesheet = Timesheet::create($data);
+        $detail = [
+            "timesheet_id" => $timesheet->id,
+            "task_id" => $request["task1"],
+            "content" => $request["content1"],
+            "time" => $request["time1"]
+        ];
+        $timesheetDetail = TimesheetDetail::create($detail);
+
+        return redirect()->route("timesheets.index");
     }
 
     /**
@@ -45,7 +72,10 @@ class DashboardController extends Controller
      */
     public function show($id)
     {
-        //
+        $timesheet = Timesheet::find($id);
+        Log::info($timesheet);
+        $detail = Timesheet::find($id)->timesheetDetail;
+        return view("timesheets.show", ['timesheet' => $timesheet, "detail" => $detail]);
     }
 
     /**
@@ -80,10 +110,5 @@ class DashboardController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function logout() {
-        Auth::logout();
-        return redirect('/login');
     }
 }

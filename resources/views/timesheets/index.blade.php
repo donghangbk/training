@@ -5,11 +5,11 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Projects</h3>
+            <h3 class="card-title">Timesheet</h3>
 
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-toggle="tooltip" title="Create">
-                <a href="{{ route("users.create") }}">
+                <a href="{{ route("timesheets.create") }}">
                         <i class="fas fa-plus"></i>
                     </a>
                 </button>
@@ -27,34 +27,34 @@
                         #
                     </th>
                     <th style="width: 20%">
-                        username
+                        Date
                     </th>
-                    <th style="width: 14%">
-                        avatar
+                    <th style="width: 5%">
+                        Total task
+                    </th>
+                    <th style="width: 20%" class="text-center">
+                        Issue
+                    </th>
+                    <th style="width: 20%" class="text-center">
+                        Next day
+                    </th>
+                    <th style="width: 8%" class="text-center">
+                        Approve
                     </th>
                     <th>
-                        email
-                    </th>
-                    <th style="width: 8%" class="text-center">
-                        Status
-                    </th>
-                    <th style="width: 8%" class="text-center">
-                        Role
-                    </th>
-                    <th style="width: 39%">
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                    @if (!empty($listUser))
-                    @foreach ($listUser as $item)
+                    @if (!empty($timesheets))
+                    @foreach ($timesheets as $item)
                 <tr id="{{ $item["id"]}}">
                         <td>
                             #
                         </td>
                         <td>
                             <a>
-                                {{ $item["username"] }}
+                                {{ $item["work_day"] }}
                             </a>
                             <br/>
                             <small>
@@ -62,44 +62,37 @@
                             </small>
                         </td>
                         <td>
-                            <ul class="list-inline">
-                                <li class="list-inline-item">
-                                    <img alt="Avatar" class="table-avatar" src="{{ $item["avatar"] or "/img/avatar.png"}}">
-                                </li>
-                            </ul>
+                            {{ $item["total"] }}
                         </td>
-                        <td class="project_progress">
+                        <td class="project_progress text-center">
                             <small>
-                                {{ $item["email"] }}
+                                {{ $item["issue"] }}
                             </small>
                         </td>
                         <td class="project-state">
-                            @if (isset($item["is_active"]) && $item["is_active"] == 1)
-                                <span class="badge badge-success">Active</span>
-                            @else
-                                <span class="badge badge-secondary">Suspended</span>
-                            @endif
-                        </td>
-                        <td style="text-align: center;">
                             <small>
-                                {{ $item["role_id"] == 1 ? "admin" : "user"}}
+                                {{ $item["next_day"] }}
                             </small>
                         </td>
-                        <td class="project-actions text-right">
-                        @if (isset($item["is_active"]) && $item["is_active"] != 0)
-                            <a class="btn btn-info btn-sm" href="{{ route('users.edit', $item["id"]) }}">
+                        <td class="project_progress">
+                            @if (isset($item["status"]) && $item["status"] == 1)
+                            <span class="badge badge-success">Approved</span>
+                            @else
+                            <span class="badge badge-secondary">Waiting</span>
+                            @endif
+                        </td>
+                        <td class="project-actions">
+                            <a class="btn btn-primary btn-sm" href="{{ route('timesheets.show', $item["id"]) }}">
+                                <i class="fas fa-folder">
+                                </i>
+                                View
+                            </a>
+                            <a class="btn btn-info btn-sm" href="{{ route('timesheets.edit', $item["id"]) }}">
                                 <i class="fas fa-pencil-alt">
                                 </i>
                                 Edit
                             </a>
                             <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                        <a class="btn btn-danger btn-sm deleteUser" href="#" data-id="{{ $item["id"] }}">
-                                <i class="fas fa-trash">
-                                </i>
-                                Delete
-                            </a>
-                    
-                        @endif
                         </td>
                     </tr>
                     @endforeach

@@ -24,8 +24,13 @@ class DatabaseSeeder extends Seeder
             ['username' => 'admin'],
             ['email' => 'admin@gmail.com'],
             ['password' => '$2y$10$meq8xtxH38GbuzFd6PoRW.dysV2Bg0Xm0KmAO0zWTdaR1KeEv40HG'],
-            ['avatar' => ''],
+            ['avatar' => '/img/avatar.png'],
             ['role_id'] => 1
+        ]);
+
+        DB::table('setting')->insert([
+            ['start_time' => '1700'],
+            ['end_time' => '1900']
         ]);
     }
 }
