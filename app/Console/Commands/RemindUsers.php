@@ -3,6 +3,11 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Setting;
+use App\User;
+use App\UserNotification;
+use App\Timesheet;
+use Mail;
 
 class RemindUsers extends Command
 {
@@ -35,8 +40,16 @@ class RemindUsers extends Command
      *
      * @return mixed
      */
-    public function handle()
-    {
-        //
+    public function handle() {
+        $this->sendEmail();
+
+    }
+
+    public function sendEmail() {
+        // foreach ($listEmail as $email) {
+            Mail::send('emails.remind_user',[], function($message){
+                $message->to("donhang.bk@gmail.com", 'Visitor')->subject('Please create your timesheet');
+            });
+        // }
     }
 }

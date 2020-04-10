@@ -25,6 +25,15 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // admin cannot create timesheet
+        Gate::define("admin-cant", function($user){
+            return $user->role_id != 1;
+        });
+
+        // user cannot create user, setting
+        Gate::define("user-cant", function($user){
+            return $user->role_id == 1;
+        });
+
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 class DashboardController extends Controller
 {
     /**
@@ -79,5 +79,10 @@ class DashboardController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function logout() {
+        Auth::logout();
+        return redirect('/login');
     }
 }

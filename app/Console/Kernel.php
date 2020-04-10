@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Setting;
+use Carbon\Carbon;
 
 class Kernel extends ConsoleKernel
 {
@@ -25,8 +27,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('remind:users')
-                  ->twiceDaily(17, 19);
+        $setting = Setting::take(1)->get();
+        
+        $start = Carbon::createFromFormat('Hi', $setting[0]["start_time"])->format('H:i');
+        $end = Carbon::createFromFormat('Hi', $setting[0]["end_time"])->format('H:i');
+        $schedule->command('remind:users')->dailyAt($start);
+        $schedule->command('remind:users')->dailyAt($end);
     }
 
     /**
