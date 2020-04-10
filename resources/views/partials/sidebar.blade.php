@@ -1,7 +1,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
-        <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+        <img src="/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
              style="opacity: .8">
         <span class="brand-text font-weight-light">Management</span>
     </a>
@@ -11,7 +11,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                {{-- <img src="{{ Auth::user()->avatar or '/img/avatar.png'}}" class="img-circle elevation-2" alt="User Image"> --}}
+                <img src="{{ Auth::user()->avatar }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
                 <a href="{{url('profile')}}" class="d-block">@if (Auth::check()) {{Auth::user()->username}} @endif</a>
@@ -78,7 +78,7 @@
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a href="pages/gallery.html" class="nav-link">
+                    <a href="{{ route("member")}}" class="nav-link">
                         <i class="fas fa-list"></i>
                         <p>
                             Timesheet member
@@ -86,7 +86,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="pages/gallery.html" class="nav-link">
+                    <a href="{{ route("setting") }}" class="nav-link">
                         <i class="fas fa-cog"></i>
                         <p>
                             Setting

@@ -24,9 +24,11 @@
                   </thead>
                   <tbody>
                       @foreach ($detail as $item)
-                      <td>{{ $item["task_id"] }}</td>
-                      <td>{{ $item["content"] }}</td>
-                      <td>{{ $item["time"] }}</td>
+                      <tr>
+                        <td>{{ $item["task_id"] }}</td>
+                        <td>{{ $item["content"] }}</td>
+                        <td>{{ $item["time"] }}</td>
+                      </tr>
                       @endforeach
                   </tbody>
               </table>

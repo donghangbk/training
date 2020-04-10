@@ -54,6 +54,7 @@
               <div class="form-group">
                 <label>Leader</label>
                 <select class="form-control select2" name="leader">
+                  <option value=""></option>
                   @if (!empty($listUser))
                       @foreach ($listUser as $item)
                 <option value="{{ $item["id"]}}">{{ $item["username"] or ""}}</option>

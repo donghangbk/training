@@ -63,37 +63,45 @@ class UsersController extends Controller {
             'description' => $request["description"]
         ];
 
-        if (isset($request["leader"])) {
+        // mark to have leader
+        $haveLeader = false;
+        if (!empty($request["leader"])) {
             $data['leader'] = $request['leader'];
+            $haveLeader = true;
         }
 
         if (isset($request["image"])) {
-            $file = $request["image"];
-            $ext = $file->getClientOriginalExtension();
-            $imgName = $this->convert_name($request["username"]);
-            $name = $imgName . rand(0, 10) . ".$ext";
-            $path = "img";
-
-            try {
-                $pathImg = $file->move($path, $name);
-                $data["avatar"] = '/'.$pathImg;
-            } catch (Exepction $e) {
-    
-            }
+            $resultUploadImg = $this->__uploadImage($request["image"], $request["username"]);
+            $data["avatar"] = $resultUploadImg != false ? $resultUploadImg : config('timesheet.avatar');
         } else {
-            $data["avatar"] = '/img/avatar.png';
+            $data["avatar"] = config('timesheet.avatar');
         }
         $newUser = User::create($data);
 
-        if (isset($request["listUser"])) {
-            $arrNoti = [];
+        $arrNoti = [];
+        if (!empty($request["listUser"])) {
             foreach ($request['listUser'] as $item) {
+                if ($haveLeader && $request["leader"] == $item) {
+                    continue;
+                }
                 $arr = [
                     'user_id' => $newUser->id,
                     'user_receive_id' => $item
                 ];
                 $arrNoti[] = $arr;
             }
+        }
+
+        // add leader to notification
+        if ($haveLeader) {
+            $arrNoti[] = [
+                'user_id' => $newUser->id,
+                'user_receive_id' => $request["leader"]
+            ];
+        }
+
+        // add notifincations
+        if (count($arrNoti) > 0) {
             $noti = UserNotification::insert($arrNoti);
         }
         // Session::flash('flash_message', 'User successfully added!');
@@ -207,8 +215,8 @@ class UsersController extends Controller {
             if (isset($request["image"])) {
                 $username = $user->username;
                 $avatar = $user->avatar;
-                $result = $this->uploadImage($request["image"], $username, $avatar);
-                $data["avatar"] = $result != false ? $result : '/img/avatar.png';
+                $result = $this->__uploadImage($request["image"], $username, $avatar);
+                $data["avatar"] = $result != false ? $result : config('timesheet.avatar');
             }
 
             $data["description"] = $request["description"];
@@ -222,13 +230,13 @@ class UsersController extends Controller {
         }
     }
 
-    public function uploadImage($file, $name, $oldImg = null) {
+    private function __uploadImage($file, $name, $oldImg = null) {
             $ext = $file->getClientOriginalExtension();
             $imgName = $this->convert_name($name);
             $name = $imgName . rand(0, 10) . ".$ext";
             $path = "img";
 
-            if (isset($oldImg) && $oldImg != '/img/avatar') {
+            if (isset($oldImg) && $oldImg != config('timesheet.avatar')) {
                 if (File::exists($oldImg)) { // unlink or remove previous image from folder
                     unlink($oldImg);
                 }

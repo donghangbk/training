@@ -11,23 +11,23 @@
 |
 */
 
-Route::group([], function () {
-
+Route::group(['middleware' => 'auth'], function () {
+    // after login
+    Route::get('/', 'DashboardController@index')->name('dashboard');
+    Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     // for user
-    Route::resource('users', 'UsersController');
+    Route::resource('users', 'UsersController')->middleware(['can:user-cant']);
     Route::post('/deleteUser', 'AjaxController@deleteUser');
     Route::post('/user/{id}/', 'UsersController@editUser')->name('editUser');
     Route::any('/profile', 'UsersController@profile')->name("profile");
-    Route::any('/setting', 'UsersController@setting')->name("setting");
+    Route::any('/setting', 'UsersController@setting')->name("setting")->middleware(['can:user-cant']);;
+    Route::any('/member', 'TimesheetsController@member')->name("member");
+    Route::post('/approve', 'AjaxController@approve');
+    Route::post('/timesheet/{id}/', 'TimesheetsController@editTimesheet')->name('editTimesheet');
 
     // for timesheet
-    Route::resource('timesheets', 'TimesheetsController');
+    Route::resource('timesheets', 'TimesheetsController')->middleware(['can:admin-cant']);
 });
-
-Route::get('/', function () {
-    return view('dashboard.index');
-});
-Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
 //Route::get('/', 'DashboardController@index');
 

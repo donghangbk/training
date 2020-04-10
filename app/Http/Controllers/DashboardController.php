@@ -12,7 +12,6 @@ class DashboardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        Log::info(Auth::user()->avatar);
         return view("dashboard.index");
     }
 

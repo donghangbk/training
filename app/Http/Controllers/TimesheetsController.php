@@ -51,15 +51,24 @@ class TimesheetsController extends Controller
             "next_day" => $request["next_day"],
             "work_day" => $request["work_day"]
         ];
-
         $timesheet = Timesheet::create($data);
-        $detail = [
+
+        $list = $request->all();
+        $totalField = count($list);
+        $maxId = ($totalField - 4) / 3;
+
+        $arrDetail = [];
+        for ($i = 1; $i <= $maxId; $i++) {
+            $detail = [
             "timesheet_id" => $timesheet->id,
-            "task_id" => $request["task1"],
-            "content" => $request["content1"],
-            "time" => $request["time1"]
+            "task_id" => $request["task$i"],
+            "content" => $request["content$i"],
+            "time" => $request["time$i"]
         ];
-        $timesheetDetail = TimesheetDetail::create($detail);
+            $arrDetail[] = $detail;
+        }
+
+        $timesheetDetail = TimesheetDetail::insert($arrDetail);
 
         return redirect()->route("timesheets.index");
     }
@@ -73,7 +82,6 @@ class TimesheetsController extends Controller
     public function show($id)
     {
         $timesheet = Timesheet::find($id);
-        Log::info($timesheet);
         $detail = Timesheet::find($id)->timesheetDetail;
         return view("timesheets.show", ['timesheet' => $timesheet, "detail" => $detail]);
     }
@@ -86,7 +94,10 @@ class TimesheetsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $timesheet = Timesheet::find($id);
+        $listTask = Timesheet::find($id)->timesheetDetail;
+
+        return view("timesheets.edit", ["timesheet" => $timesheet, 'listTask' => $listTask]);
     }
 
     /**
@@ -98,7 +109,7 @@ class TimesheetsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return redirect()->route();
     }
 
     /**
@@ -110,5 +121,44 @@ class TimesheetsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function member() {
+        $timesheets = User::where("leader", Auth::id())->join("timesheets", "timesheets.user_id", "users.id")->select("timesheets.*")->orderBy("timesheets.created_at", "desc")->get();
+        foreach ($timesheets as &$item) {
+            $countTask = TimesheetDetail::all()->where("timesheet_id", $item["id"])->count();
+            $item["total"] = $countTask;
+        }
+        return view("timesheets.member", compact("timesheets"));
+    }
+
+    public function editTimesheet(Request $request, $id) {
+        $data = [
+            "issue" => $request["issue"],
+            "next_day" => $request["next_day"],
+            "work_day" => $request["work_day"]
+        ];
+        $timesheet = Timesheet::where("id", $id)->update($data);
+
+        $list = $request->all();
+        $totalField = count($list);
+        $maxId = ($totalField - 4) / 3;
+
+        // delete detail of timesheet_id after updating
+        $rsDelete = TimesheetDetail::where("timesheet_id", $id)->delete();
+        $arrDetail = [];
+        for ($i = 1; $i <= $maxId; $i++) {
+            $detail = [
+            "timesheet_id" => $id,
+            "task_id" => $request["task$i"],
+            "content" => $request["content$i"],
+            "time" => $request["time$i"]
+        ];
+            $arrDetail[] = $detail;
+        }
+
+        $timesheetDetail = TimesheetDetail::insert($arrDetail);
+
+        return redirect()->route("timesheets.index");
     }
 }
