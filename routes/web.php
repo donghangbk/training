@@ -26,7 +26,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/timesheet/{id}/', 'TimesheetsController@editTimesheet')->name('editTimesheet');
 
     // for timesheet
-    Route::resource('timesheets', 'TimesheetsController')->middleware(['can:admin-cant']);
+    // Route::resource('timesheets', 'TimesheetsController')->middleware(['can:admin-cant']);
+    Route::resource('timesheets', 'TimesheetsController');
 });
 
 //Route::get('/', 'DashboardController@index');
