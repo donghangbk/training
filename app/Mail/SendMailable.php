@@ -10,15 +10,16 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class SendMailable extends Mailable
 {
     use Queueable, SerializesModels;
+    protected $params;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($params)
     {
-        //
+        $this->params = $params;
     }
 
     /**
@@ -28,6 +29,9 @@ class SendMailable extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        $subject = isset($this->params["username"]) ? $this->params["username"] ." create time sheet" : "";
+        return $this->view('emails.create_timesheet')->with([
+            'name' => $this->params["username"],
+        ])->subject($subject);;
     }
 }

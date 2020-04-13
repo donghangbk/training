@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Timesheet;
 use App\Models\TimesheetDetail;
+use App\Models\UserNotification;
+use App\Mail\SendMailable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Artisan;
+use Mail;
 
 class TimesheetsController extends Controller
 {
@@ -170,6 +173,14 @@ class TimesheetsController extends Controller
     }
 
     private function __sendEmail() {
-        Artisan::queue("notify:timesheet", ["params" => ["userId" => Auth::id(), "username" => Auth::user()->username], '--queue' => 'default']);
+        // Artisan::queue("notify:timesheet", ["params" => ["userId" => Auth::id(), "username" => Auth::user()->username], '--queue' => 'default']);
+        $params = ["userId" => Auth::id(), "username" => Auth::user()->username];
+
+        $listEmail = UserNotification::where("user_id", $params["userId"])->join("users", "user_receive_id", "users.id")->select("email")->get();
+        
+        foreach ($listEmail as $email) {
+            $address = $email["email"];
+            Mail::to($address)->queue(new SendMailable($params));
+        }
     }
 }
