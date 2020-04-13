@@ -9,6 +9,6 @@ class UserNotification extends Model {
     protected $fillable = ['id', 'user_id', 'user_receive_id'];
 
     public function info() {
-        return $this->belongsTo('App\User', 'user_receive_id', 'id');
+        return $this->belongsTo('App\Models\User', 'user_receive_id', 'id');
     }
 }
