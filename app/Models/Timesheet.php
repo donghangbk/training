@@ -10,6 +10,6 @@ class Timesheet extends Model {
     
     public function timesheetDetail()
     {
-        return $this->hasMany('App\TimesheetDetail', 'timesheet_id');
+        return $this->hasMany('App\Models\TimesheetDetail', 'timesheet_id');
     }
 }
