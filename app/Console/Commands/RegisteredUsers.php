@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMailable;
+use Illuminate\Support\Facades\Log;
 
 class RegisteredUsers extends Command
 {
@@ -13,7 +14,7 @@ class RegisteredUsers extends Command
      *
      * @var string
      */
-    protected $signature = 'registered:users';
+    protected $signature = 'registered:users {user}';
 
     /**
      * The console command description.
@@ -39,6 +40,6 @@ class RegisteredUsers extends Command
      */
     public function handle()
     {
-        //
+        
     }
 }

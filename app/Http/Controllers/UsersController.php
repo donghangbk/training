@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User;
-use App\Role;
-use App\UserNotification;
-use App\Setting;
+use App\Models\User;
+use App\Models\Role;
+use App\Models\UserNotification;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -66,7 +66,7 @@ class UsersController extends Controller {
         // mark to have leader
         $haveLeader = false;
         if (!empty($request["leader"])) {
-            $data['leader'] = $request['leader'];
+            $data['leader'] = $request['leader'];  
             $haveLeader = true;
         }
 
@@ -163,17 +163,6 @@ class UsersController extends Controller {
         return redirect()->route('users.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
     public function editUser(Request $request, $id) {
         Validator::make($request->all(), [
             'username' => 'required|string|alpha|max:31',
@@ -204,7 +193,7 @@ class UsersController extends Controller {
             return view("users.profile", compact("user"));
         }
 
-        if ($request->isMethod('post'))  {Log::info($request);
+        if ($request->isMethod('post'))  {
             Validator::make($request->all(), [
                 'description' => 'required|regex:/(([a-zA-z]+)(\d+)?$)/',
                 'current_password' => ['nullable',new MatchOldPassword],

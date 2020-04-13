@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Setting;
-use App\User;
-use App\UserNotification;
-use App\Timesheet;
+use App\Models\Setting;
+use App\Models\User;
+use App\Models\UserNotification;
+use App\Models\Timesheet;
 use Mail;
 
 class RemindUsers extends Command

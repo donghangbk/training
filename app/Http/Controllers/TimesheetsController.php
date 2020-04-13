@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User;
-use App\Timesheet;
-use App\TimesheetDetail;
+use App\Models\User;
+use App\Models\Timesheet;
+use App\Models\TimesheetDetail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Artisan;
 
 class TimesheetsController extends Controller
 {
@@ -70,6 +71,9 @@ class TimesheetsController extends Controller
 
         $timesheetDetail = TimesheetDetail::insert($arrDetail);
 
+        // send notification to leader and other users
+        $this->__sendEmail();
+
         return redirect()->route("timesheets.index");
     }
 
@@ -126,7 +130,7 @@ class TimesheetsController extends Controller
     public function member() {
         $timesheets = User::where("leader", Auth::id())->join("timesheets", "timesheets.user_id", "users.id")->select("timesheets.*")->orderBy("timesheets.created_at", "desc")->get();
         foreach ($timesheets as &$item) {
-            $countTask = TimesheetDetail::all()->where("timesheet_id", $item["id"])->count();
+            $countTask = TimesheetDetail::where("timesheet_id", $item["id"])->count();
             $item["total"] = $countTask;
         }
         return view("timesheets.member", compact("timesheets"));
@@ -136,7 +140,8 @@ class TimesheetsController extends Controller
         $data = [
             "issue" => $request["issue"],
             "next_day" => $request["next_day"],
-            "work_day" => $request["work_day"]
+            "work_day" => $request["work_day"],
+            "status" => 0 // update status to wait admin to approve
         ];
         $timesheet = Timesheet::where("id", $id)->update($data);
 
@@ -159,6 +164,12 @@ class TimesheetsController extends Controller
 
         $timesheetDetail = TimesheetDetail::insert($arrDetail);
 
+        // send Email
+        $this->__sendEmail();
         return redirect()->route("timesheets.index");
+    }
+
+    private function __sendEmail() {
+        Artisan::queue("notify:timesheet", ["params" => ["userId" => Auth::id(), "username" => Auth::user()->username], '--queue' => 'default']);
     }
 }
