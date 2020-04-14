@@ -3,10 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Setting;
 use App\Models\User;
-use App\Models\UserNotification;
-use App\Models\Timesheet;
+use App\Mail\SendMailable;
 use Mail;
 
 class RemindUsers extends Command
@@ -23,7 +21,7 @@ class RemindUsers extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Remind user to report time';
 
     /**
      * Create a new command instance.
@@ -41,15 +39,20 @@ class RemindUsers extends Command
      * @return mixed
      */
     public function handle() {
-        $this->sendEmail();
+        $conditions = [["work_day", "=", date('Y-m-d')]];
+        $listEmail = User::select("email")->whereNotIn("id", function($query) use ($conditions) {
+            $query->select("user_id")->from("timesheets")->where($conditions);
+        })->get();
+
+        $this->__sendEmail($listEmail);
 
     }
 
-    public function sendEmail() {
-        // foreach ($listEmail as $email) {
-            Mail::send('emails.remind_user',[], function($message){
-                $message->to("donhang.bk@gmail.com", 'Visitor')->subject('Please create your timesheet');
-            });
-        // }
+    private function __sendEmail($listEmail) {
+        foreach ($listEmail as $email) {
+            $this->info("Sent email to: ". $email["email"]);
+            $address = $email["email"];
+            Mail::to($address)->queue(new SendMailable([]));
+        }
     }
 }

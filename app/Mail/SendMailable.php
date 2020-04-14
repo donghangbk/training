@@ -29,9 +29,14 @@ class SendMailable extends Mailable
      */
     public function build()
     {
-        $subject = isset($this->params["username"]) ? $this->params["username"] ." create time sheet" : "";
-        return $this->view('emails.create_timesheet')->with([
-            'name' => $this->params["username"],
-        ])->subject($subject);;
+        if (isset($this->params["username"])) {
+            $subject = $this->params["username"] ." create time sheet";
+            $view = "emails.create_timesheet";
+        } else {
+            $subject = "Please create your timesheet";
+            $view = "emails.remind_user";
+        }
+        
+        return $this->view($view)->subject($subject);
     }
 }

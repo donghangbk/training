@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use Response;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Timesheet;
@@ -17,10 +18,10 @@ class AjaxController extends Controller {
 
             $rsUpdate = User::where("id", $request["id"])->update($updateData);
             if (!$rsUpdate) {
-                return json_encode(["res" => false]);
+                return Response::json(['error' => 'save error'], 400);
             }
 
-            return json_encode(["res" => true]);
+            return Response::json(['error' => ''], 200);
         }
     }
 
@@ -31,9 +32,9 @@ class AjaxController extends Controller {
             ];
             $rsUpdate = Timesheet::where("id", $request["id"])->update($updateData);
             if (!$rsUpdate) {
-                return json_encode(["res" => false]);
+                return Response::json(['error' => 'save error'], 400);
             }
-            return json_encode(["res" => true]);
+            return Response::json(['error' => ''], 200);
         }
     }
 }
