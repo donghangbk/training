@@ -29,7 +29,7 @@
                 @endif
               <div class="form-group">
                 <label for="exampleInputEmail1">Email</label>
-                <input type="email" class="form-control" placeholder="Email" name="email" value="{{ $user["email"] or "" }}">
+                <input type="email" class="form-control" placeholder="Email" name="email" value="{{ old("email", $user["email"]) }}">
               </div>
               @if ($errors->has("email"))
                 <span class="text-danger">{{ $errors->first("email") }}</span>

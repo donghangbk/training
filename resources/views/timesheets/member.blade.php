@@ -36,7 +36,7 @@
                 <tbody>
                     @if (!empty($timesheets))
                     @foreach ($timesheets as $item)
-                <tr id="{{ $item["id"]}}">
+                <tr>
                         <td>
                             #
                         </td>
@@ -67,7 +67,7 @@
                             @if (isset($item["status"]) && $item["status"] == 1)
                             <input type="checkbox" checked disabled readonly>
                             @else
-                        <input type="checkbox" class="approve" data-id="{{ $item["id"] }}">
+                        <input type="checkbox" id="{{ $item["id"]}}" class="approve" data-id="{{ $item["id"] }}">
                             @endif
                         </td>
                         <td class="project-actions">

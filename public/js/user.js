@@ -31,9 +31,9 @@ $(document).ready(function() {
                 dataType: 'json',
                 data: {id:id, _token: token},
                 success: function (e) {
-                    if (e.res) {
-                        console.log(e);
-                        $("#"+id). remove();
+                    if (e.error == "") {
+                        $("#" + id + " > td:nth-child(7)").html("");
+                        $("#" + id + " > td:nth-child(5)").html("<span class='badge badge-secondary'>Suspended</span>");
                     }
                 },
                 error: function (e) {
@@ -70,7 +70,13 @@ $(document).ready(function() {
             url: '/approve',
             data: {id:id, _token: token},
             success: function (e) {
-                alert("Approve successfully");
+                if (e.error == "") {
+                    $("#"+id).attr('readonly', true);
+                    $("#"+id).attr('disabled', true);
+                    alert("Approve successfully");
+                } else {
+                    alert(e.error);
+                }
             },
             error: function (e) {
                 alert("Co loi trong qua trinh xu ly");

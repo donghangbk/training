@@ -19,7 +19,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('users', 'UsersController')->middleware(['can:user-cant']);
     Route::post('/deleteUser', 'AjaxController@deleteUser');
     Route::post('/user/{id}/', 'UsersController@editUser')->name('editUser');
-    Route::any('/profile', 'UsersController@profile')->name("profile");
+    Route::get('/profile', 'UsersController@profile')->name("profile");
+    Route::post('/updateProfile', 'UsersController@updateProfile')->name("update_profile");
     Route::any('/setting', 'UsersController@setting')->name("setting")->middleware(['can:user-cant']);;
     Route::any('/member', 'TimesheetsController@member')->name("member");
     Route::post('/approve', 'AjaxController@approve');

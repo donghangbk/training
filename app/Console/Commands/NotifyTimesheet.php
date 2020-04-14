@@ -60,8 +60,8 @@ class NotifyTimesheet extends Command
                 "subject" => $subject
             ];
 
-            Mail::send('emails.create_timesheet',[], function($message) use ($data){
-                $message->to($data["address"], 'HangDong')->subject($data["subject"]);
+            Mail::queue('emails.create_timesheet',[], function($message) use ($data){
+                $message->to($data["address"])->subject($data["subject"]);
             });
     }
 }

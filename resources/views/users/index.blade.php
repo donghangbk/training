@@ -93,7 +93,7 @@
                                 Edit
                             </a>
                             <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                        <a class="btn btn-danger btn-sm deleteUser" href="#" data-id="{{ $item["id"] }}">
+                        <a class="btn btn-danger btn-sm deleteUser" href="javascript:void(0)"" data-id="{{ $item["id"] }}">
                                 <i class="fas fa-trash">
                                 </i>
                                 Delete

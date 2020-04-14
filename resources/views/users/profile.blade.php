@@ -38,12 +38,12 @@
           <div class="card-body">
             <div class="tab-content">
               <div class="active tab-pane" id="settings">
-                <form class="form-horizontal" method="post" enctype="multipart/form-data" action="{{ route("profile") }}">
+                <form class="form-horizontal" method="post" enctype="multipart/form-data" action="{{ route("update_profile") }}">
                     {{ csrf_field() }}
                   <div class="form-group row">
                     <label for="inputExperience" class="col-sm-2 col-form-label">Description</label>
                     <div class="col-sm-10">
-                    <textarea class="form-control" id="inputExperience" placeholder="Description" name="description">{{ $user["description"] or "" }}</textarea>
+                    <textarea class="form-control" id="inputExperience" placeholder="Description" name="description">{{ old("description", $user["description"]) }}</textarea>
                     </div>
                     @if ($errors->has("description"))
                     <span class="col-sm-12 offset-2 text-danger">{{ $errors->first("description") }}</span>

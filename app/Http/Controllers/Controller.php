@@ -11,12 +11,10 @@ use Illuminate\Support\Facades\Auth;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-//    protected $_userId = "";
+
 
     public function __construct() {
-//        if (Auth::check()) {
-//            $this->userId = Auth::id();
-//        }
+
     }
 
     public function convert_name($str) {
