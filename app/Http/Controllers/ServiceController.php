@@ -1,29 +1,26 @@
 <?php
-namespace App\Http\Traits;
+namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Role;
 use App\Models\UserNotification;
 use App\Models\Setting;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use File;
 use Carbon\Carbon;
-
-trait UserService {
+class ServiceController {
 
     public function listUser() {
         $listUser = User::orderBy('id', 'desc')->get();;
-        foreach ($listUser as &$item) {
-            $item["created_at"] = date('Y-m-d', strtotime($item["created_at"]));
-        }
         return $listUser;
     }
 
     public function formCreate() {
         $role = Role::all();
-        $listUser = User::select("id", "username")->where("is_active", 1)->where("role_id", "<>", "1")->get(); // 1 is admin
+        $listUser = User::select("id", "username")->active()->role(2)->get(); // 2 is user
         return [
             "role" => $role,
             "listUser" => $listUser
@@ -34,7 +31,7 @@ trait UserService {
         $data = [
             'username' => $request['username'],
             'email' => $request['email'],
-            'password' => bcrypt("1234567"),
+            'password' => config('timesheet.pass_default'),
             'role_id' => $request['role_id'],
             'description' => $request["description"]
         ];
@@ -47,10 +44,8 @@ trait UserService {
         }
 
         if (isset($request["image"])) {
-            $resultUploadImg = $this->__uploadImage($request["image"], $request["username"]);
-            $data["avatar"] = $resultUploadImg != false ? $resultUploadImg : config('timesheet.avatar');
-        } else {
-            $data["avatar"] = config('timesheet.avatar');
+            $resultUploadImg = $this->uploadImage($request["image"], $request["username"]);
+            $data["avatar"] = $resultUploadImg ?? config('timesheet.avatar');
         }
         $newUser = User::create($data);
 
@@ -116,8 +111,8 @@ trait UserService {
         if (isset($request["image"])) {
             $username = Auth::user()->username;
             $avatar = Auth::user()->avatar;
-            $result = $this->__uploadImage($request["image"], $username, $avatar);
-            $data["avatar"] = $result != false ? $result : config('timesheet.avatar');
+            $resultUploadImg = $this->uploadImage($request["image"], $username, $avatar);
+            $data["avatar"] = $resultUploadImg ?? config('timesheet.avatar');
         }
 
         $data["description"] = $request["description"];
@@ -131,10 +126,11 @@ trait UserService {
     }
 
     public function getSetting() {
-        $setting = Setting::take(1)->get();
+        $setting = Setting::first();
 
-        $data["start_time"] = Carbon::createFromFormat('Hi', $setting[0]["start_time"])->format('g:i a');
-        $data["end_time"] = Carbon::createFromFormat('Hi', $setting[0]["end_time"])->format('g:i a');
+        $data["start_time"] = Carbon::createFromFormat('Hi', $setting["start_time"])->format('g:i a');
+        $data["end_time"] = Carbon::createFromFormat('Hi', $setting["end_time"])->format('g:i a');
+        
         return $data;
     }
 
@@ -151,9 +147,9 @@ trait UserService {
         return true;
     }
 
-    private function __uploadImage($file, $name, $oldImg = null) {
+    private function uploadImage($file, $name, $oldImg = null) {
         $ext = $file->getClientOriginalExtension();
-        $imgName = $this->convert_name($name);
+        $imgName = $this->convertName($name);
         $name = $imgName . rand(0, 10) . ".$ext";
         $path = "img";
 
@@ -162,11 +158,33 @@ trait UserService {
                 unlink($oldImg);
             }
         }
+
         try {
             $pathImg = $file->move($path, $name);
-        } catch (Exepction $e) {
-            return false;
+        } catch (Exception $e) {
+            return null;
         }
+
         return '/'.$pathImg;
-}
+    }
+
+    private function convertName($str) {
+        $str = preg_replace("/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/", 'a', $str);
+        $str = preg_replace("/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/", 'e', $str);
+        $str = preg_replace("/(ì|í|ị|ỉ|ĩ)/", 'i', $str);
+        $str = preg_replace("/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/", 'o', $str);
+        $str = preg_replace("/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/", 'u', $str);
+        $str = preg_replace("/(ỳ|ý|ỵ|ỷ|ỹ)/", 'y', $str);
+        $str = preg_replace("/(đ)/", 'd', $str);
+        $str = preg_replace("/(À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ)/", 'A', $str);
+        $str = preg_replace("/(È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ)/", 'E', $str);
+        $str = preg_replace("/(Ì|Í|Ị|Ỉ|Ĩ)/", 'I', $str);
+        $str = preg_replace("/(Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ)/", 'O', $str);
+        $str = preg_replace("/(Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ)/", 'U', $str);
+        $str = preg_replace("/(Ỳ|Ý|Ỵ|Ỷ|Ỹ)/", 'Y', $str);
+        $str = preg_replace("/(Đ)/", 'D', $str);
+        $str = preg_replace("/(\“|\”|\‘|\’|\,|\!|\&|\;|\@|\#|\%|\~|\`|\=|\_|\'|\]|\[|\}|\{|\)|\(|\+|\^|\/)/", '-', $str);
+        $str = preg_replace("/( )/", '-', $str);
+        return $str;
+    }
 }
