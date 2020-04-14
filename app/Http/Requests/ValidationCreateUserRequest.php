@@ -24,10 +24,10 @@ class ValidationCreateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required|string|alpha|max:31',
+            'username' => 'required|string|max:31',
             'email' => 'required|string|email|max:255|unique:users',
             'role_id' => 'required|numeric',
-            'description' => 'required|regex:/(([a-zA-z]+)(\d+)?$)/'
+            'description' => 'nullable|regex:/(([a-zA-z]+)(\d+)?$)/'
         ];
     }
 }

@@ -25,7 +25,7 @@ class ValidationUpdateProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            'description' => 'required|regex:/(([a-zA-z]+)(\d+)?$)/',
+            'description' => 'nullable|regex:/(([a-zA-z]+)(\d+)?$)/',
             'current_password' => ['nullable',new MatchOldPassword],
             'password' => 'nullable|string|min:6|max:20|confirmed|different:current_password',
             'password_confirmation' => 'string|min:6|max:20|nullable'
