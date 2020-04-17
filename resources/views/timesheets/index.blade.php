@@ -1,8 +1,36 @@
 @extends('layouts.master')
 @section('js')
-<script type="text/javascript" src="{{asset('js/user.js')}}"></script>   
+<script type="text/javascript" src="{{asset('js/user.js')}}"></script>
 @endsection
 @section('content')
+<form role="form" method="get" action="{{ route("timesheets.search") }}">
+    {{ csrf_field() }}
+    <div class="row">
+        <div class='col-md-2 offset-7'>
+            <div class="form-group">
+                <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker7" name="from" value="{{ old("from")}}"/>
+                     <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                     </div>
+                 </div>
+             </div>
+        </div>
+        <div class='col-md-2'>
+            <div class="form-group">
+                <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker8" name="to" value="{{ old("to")}}"/>
+                    <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</form>
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Timesheet</h3>

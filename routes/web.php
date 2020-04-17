@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
     // for timesheet
     // Route::resource('timesheets', 'TimesheetsController')->middleware(['can:admin-cant']);
     Route::resource('timesheets', 'TimesheetsController');
+    Route::get('timesheet/search', 'TimesheetsController@search')->name("timesheets.search");
 });
 
 //Route::get('/', 'DashboardController@index');

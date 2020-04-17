@@ -7,15 +7,22 @@ use App\Http\Requests\ValidationEditUserRequest;
 use App\Http\Requests\ValidationUpdateProfileRequest;
 
 use Illuminate\Http\Request;
+use App\Services\Interfaces\UserServiceInterface;
 
 class UsersController extends Controller {
+
+    protected $userService;
+
+    public function __construct(UserServiceInterface $userService) {
+        $this->userService = $userService;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $listUser = $this->service->listUser();
+        $listUser = $this->userService->listUser();
         return view('users.index', compact("listUser"));
     }
 
@@ -25,7 +32,7 @@ class UsersController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        $data = $this->service->formCreate();
+        $data = $this->userService->formCreate();
         return view("users.create", $data);
     }
 
@@ -37,7 +44,7 @@ class UsersController extends Controller {
      */
     public function store(ValidationCreateUserRequest $request)
     {
-        $user = $this->service->createUser($request);
+        $user = $this->userService->createUser($request);
         // Session::flash('flash_message', 'User successfully added!');
         return redirect()->route('users.index');
     }
@@ -50,33 +57,33 @@ class UsersController extends Controller {
      */
     public function edit($id)
     {
-        $data = $this->service->formEdit($id);
+        $data = $this->userService->formEdit($id);
         return view("users.edit", $data);
     }
 
     public function editUser(ValidationEditUserRequest $request, $id) {
-        $rsUpdate = $this->service->updateUser($request, $id);
+        $rsUpdate = $this->userService->updateUser($request, $id);
 
         // Session::flash('flash_message', 'User successfully updated!');
         return redirect()->route('users.index');
     }
 
     public function profile() {
-        $user = $this->service->userProfile();
+        $user = $this->userService->userProfile();
         return view("users.profile", compact("user"));
     }
 
     public function updateProfile(ValidationUpdateProfileRequest $request) {
-        $user = $this->service->updateUserProfile($request);
+        $user = $this->userService->updateUserProfile($request);
         return redirect()->route("profile");
     }
 
     public function setting(Request $request) {
         if ($request->isMethod('get')) {
-            $data = $this->service->getSetting();
+            $data = $this->userService->getSetting();
             return view("users.setting", compact("data"));
         } else {
-            $rsUpdate = $this->service->updateSetting($request);
+            $rsUpdate = $this->userService->updateSetting($request);
             return redirect()->route("setting");
         }
     }

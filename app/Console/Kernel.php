@@ -26,10 +26,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $setting = Setting::take(1)->get();
+        $setting = Setting::first();
         
-        $start = Carbon::createFromFormat('Hi', $setting[0]["start_time"])->format('H:i');
-        $end = Carbon::createFromFormat('Hi', $setting[0]["end_time"])->format('H:i');
+        $start = Carbon::createFromFormat('Hi', $setting["start_time"])->format('H:i');
+        $end = Carbon::createFromFormat('Hi', $setting["end_time"])->format('H:i');
         $schedule->command('remind:users')->dailyAt($start);
         $schedule->command('remind:users')->dailyAt($end);
     }
