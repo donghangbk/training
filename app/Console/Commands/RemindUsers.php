@@ -44,11 +44,11 @@ class RemindUsers extends Command
             $query->select("user_id")->from("timesheets")->where($conditions);
         })->get();
 
-        $this->__sendEmail($listEmail);
+        $this->sendEmail($listEmail);
 
     }
 
-    private function __sendEmail($listEmail) {
+    private function sendEmail($listEmail) {
         foreach ($listEmail as $email) {
             $this->info("Sent email to: ". $email["email"]);
             $address = $email["email"];

@@ -1,17 +1,20 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Services;
 
 use App\Models\User;
 use App\Models\Role;
 use App\Models\UserNotification;
 use App\Models\Setting;
+use App\Models\Timesheet;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use File;
 use Carbon\Carbon;
-class ServiceController {
+use App\Services\Interfaces\UserServiceInterface;
+
+class UserService implements UserServiceInterface {
 
     public function listUser() {
         $listUser = User::orderBy('id', 'desc')->get();;
