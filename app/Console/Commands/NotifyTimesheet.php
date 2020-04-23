@@ -4,9 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use App\Models\User;
 use App\Models\UserNotification;
-use App\Models\Timesheet;
 use Mail;
 
 class NotifyTimesheet extends Command
@@ -45,15 +43,15 @@ class NotifyTimesheet extends Command
         $params = $this->argument('params');
 
         // list user
-        $listEmail = UserNotification::where("user_id", $params["userId"])->join("users", "user_receive_id", "users.id")->select("email")->get();
+        $listReceiver = UserNotification::where("user_id", $params["userId"])->select("user_receive_id")->get();
         
-        foreach ($listEmail as $email) {
-            $address = $email["email"];
-            $this->__sendEmail($params["username"], $address);
+        foreach ($listReceiver as $receiverId) {
+            $email = $receiverId->info->email;
+            $this->sendEmail($params["username"], $email);
         }
     }
 
-    private function __sendEmail($username, $address) {
+    private function sendEmail($username, $address) {
             $subject = $username . ' created timesheet. Please check !!!';
             $data = [
                 "address" => $address,
