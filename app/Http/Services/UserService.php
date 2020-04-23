@@ -23,7 +23,7 @@ class UserService implements UserServiceInterface {
 
     public function formCreate() {
         $role = Role::all();
-        $listUser = User::select("id", "username")->active()->role(2)->get(); // 2 is user
+        $listUser = User::select("id", "username")->active()->role(User::ROLE_USER)->get();
         return [
             "role" => $role,
             "listUser" => $listUser

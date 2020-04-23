@@ -42,11 +42,11 @@
                         </td>
                         <td>
                             <a>
-                                {{ $item["work_day"] }}
+                                {{ $item["work_day"] or ""}}
                             </a>
                             <br/>
                             <small>
-                                Created {{ $item["created_at"] }}
+                                Created {{ $item["created_at"] or "" }}
                             </small>
                         </td>
                         <td>

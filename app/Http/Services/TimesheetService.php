@@ -17,12 +17,7 @@ use App\Services\Interfaces\TimesheetServiceInterface;
 class TimesheetService implements TimesheetServiceInterface {
 
     public function listTimesheet() {
-        $timesheets = Timesheet::where("user_id", Auth::id())->orderBy("created_at", 'desc')->get();
-        
-        foreach ($timesheets as &$item) {
-            $countTask = TimesheetDetail::all()->where("timesheet_id", $item["id"])->count();
-            $item["total"] = $countTask;
-        }
+        $timesheets = Timesheet::where("user_id", Auth::id())->orderBy("created_at", 'desc')->withCount('timesheetDetail as total')->get();
 
         return $timesheets;
     }
@@ -67,12 +62,11 @@ class TimesheetService implements TimesheetServiceInterface {
     }
 
     public function member() {
-        $timesheets = User::where("leader", Auth::id())->join("timesheets", "timesheets.user_id", "users.id")->select("timesheets.*")->orderBy("timesheets.created_at", "desc")->get();
-        foreach ($timesheets as &$item) {
-            $countTask = TimesheetDetail::where("timesheet_id", $item["id"])->count();
-            $item["total"] = $countTask;
-        }
-
+        $idLeader = Auth::id();
+        $timesheets = Timesheet::with("user")->whereHas("user", function($query) use ($idLeader) {
+            $query->where("leader", $idLeader);
+        })->withCount("timesheetDetail as total")->orderBy("timesheets.created_at", "desc")->get();
+        
         return $timesheets;
     }
 
@@ -117,19 +111,18 @@ class TimesheetService implements TimesheetServiceInterface {
             ["work_day", ">=", $from],
             ["work_day", "<=", $to]
         ];
-        $rsSearch = Timesheet::where($conditions)->get();
-        Log::info($rsSearch);
+        $rsSearch = Timesheet::where($conditions)->withCount("timesheetDetail as total")->get();
         return $rsSearch;
     }
     private function sendEmail() {
         // Artisan::queue("notify:timesheet", ["params" => ["userId" => Auth::id(), "username" => Auth::user()->username], '--queue' => 'default']);
         $params = ["userId" => Auth::id(), "username" => Auth::user()->username];
 
-        $listEmail = UserNotification::where("user_id", $params["userId"])->join("users", "user_receive_id", "users.id")->select("email")->get();
+        $listReceiverId = UserNotification::where("user_id", $params["userId"])->select("user_receive_id")->get();
         
-        foreach ($listEmail as $email) {
-            $address = $email["email"];
-            Mail::to($address)->queue(new SendMailable($params));
+        foreach ($listReceiverId as $receiverId) {
+            $email = $receiverId->info->email;
+            Mail::to($email)->queue(new SendMailable($params));
         }
     }
 }

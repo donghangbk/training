@@ -18,18 +18,16 @@
             <div class="card-body">
                 <div class="form-group">
                     <label>Date</label>
-  
-                    <div class="input-group">
-                      <div class="input-group-prepend">
+                    <div class="input-group" id="datetimepicker7" data-target-input="nearest">
+                      <div class="input-group-prepend" data-target="#datetimepicker7" data-toggle="datetimepicker">
                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                       </div>
-                    <input type="text" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="yyyy-mm-dd" data-mask name="work_day" value="{{ old('work_day', $timesheet["work_day"])}}" required>
+                      <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker7" name="work_day" value="{{ old('work_day', $timesheet["work_day"])}}" required>
                     </div>
-                    <!-- /.input group -->
                   </div>
               <div class="form-group">
                 <label for="exampleInputEmail1">Issue</label>
-                <textarea rows="5" class="form-control" placeholder="Issue" name="issue" value="{{ old("issue", $timesheet["issue"]) }}"></textarea>
+                <textarea rows="5" class="form-control" placeholder="Issue" name="issue" >{{ old("issue", $timesheet["issue"]) }}</textarea>
                 @if ($errors->has("issue"))
                 <span class="text-danger">{{ $errors->first("issue") }}</span>
                 @endif
