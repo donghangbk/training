@@ -14,15 +14,18 @@ use Mail;
 
 use App\Services\Interfaces\TimesheetServiceInterface;
 
-class TimesheetService implements TimesheetServiceInterface {
+class TimesheetService implements TimesheetServiceInterface
+{
 
-    public function listTimesheet() {
+    public function listTimesheet()
+    {
         $timesheets = Timesheet::where("user_id", Auth::id())->orderBy("created_at", 'desc')->withCount('timesheetDetail as total')->get();
 
         return $timesheets;
     }
 
-    public function createTimesheet($request) {
+    public function createTimesheet($request)
+    {
         $data = [
             "user_id" => Auth::user()->id,
             "issue" => $request["issue"],
@@ -52,7 +55,8 @@ class TimesheetService implements TimesheetServiceInterface {
         // $this->sendEmail();
     }
 
-    public function getDetail($id) {
+    public function getDetail($id)
+    {
         $timesheet = Timesheet::find($id);
         $detail = Timesheet::find($id)->timesheetDetail;
         return [
@@ -61,7 +65,8 @@ class TimesheetService implements TimesheetServiceInterface {
         ];
     }
 
-    public function getTimesheetsOfMembers() {
+    public function getTimesheetsOfMembers()
+    {
         $idLeader = Auth::id();
         $timesheets = Timesheet::with("user")
                                 ->whereHas("user", function($query) use ($idLeader) {
@@ -74,7 +79,8 @@ class TimesheetService implements TimesheetServiceInterface {
         return $timesheets;
     }
 
-    public function updateTimesheet($request, $id) {
+    public function updateTimesheet($request, $id)
+    {
         $data = [
             "issue" => $request["issue"],
             "next_day" => $request["next_day"],
@@ -106,7 +112,8 @@ class TimesheetService implements TimesheetServiceInterface {
         // $this->sendEmail();
     }
 
-    public function searchTimesheet($request) {
+    public function searchTimesheet($request)
+    {
         $from = $request->get("from");
         $to = $request->get("to");
 
@@ -118,8 +125,9 @@ class TimesheetService implements TimesheetServiceInterface {
         $rsSearch = Timesheet::where($conditions)->withCount("timesheetDetail as total")->get();
         return $rsSearch;
     }
-    
-    private function sendEmail() {
+
+    private function sendEmail()
+    {
         // Artisan::queue("notify:timesheet", ["params" => ["userId" => Auth::id(), "username" => Auth::user()->username], '--queue' => 'default']);
         $params = ["userId" => Auth::id(), "username" => Auth::user()->username];
 

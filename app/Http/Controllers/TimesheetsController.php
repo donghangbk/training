@@ -12,7 +12,8 @@ class TimesheetsController extends Controller
 {
     protected $timesheetService;
 
-    public function __construct(TimesheetServiceInterface $timesheetService) {
+    public function __construct(TimesheetServiceInterface $timesheetService)
+    {
         $this->timesheetService = $timesheetService;
     }
     /**
@@ -82,12 +83,14 @@ class TimesheetsController extends Controller
         return redirect()->route("timesheets.index");
     }
 
-    public function getTimesheetsOfMembers() {
+    public function getTimesheetsOfMembers()
+    {
         $timesheets = $this->timesheetService->getTimesheetsOfMembers();
         return view("timesheets.member", compact("timesheets"));
     }
 
-    public function search(SearchTimesheetRequest $request) {
+    public function search(SearchTimesheetRequest $request)
+    {
         $resultSearch = $this->timesheetService->searchTimesheet($request);
         
         return view("timesheets.index")->with("timesheets", $resultSearch);

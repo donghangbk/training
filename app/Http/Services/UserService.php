@@ -14,14 +14,17 @@ use File;
 use Carbon\Carbon;
 use App\Services\Interfaces\UserServiceInterface;
 
-class UserService implements UserServiceInterface {
+class UserService implements UserServiceInterface
+{
 
-    public function listUser() {
+    public function listUser()
+    {
         $listUser = User::orderBy('id', 'desc')->get();;
         return $listUser;
     }
 
-    public function formCreate() {
+    public function formCreate()
+    {
         $role = Role::all();
         $listUser = User::select("id", "username")->active()->role(User::ROLE_USER)->get();
         return [
@@ -30,7 +33,8 @@ class UserService implements UserServiceInterface {
         ];
     }
 
-    public function createUser($request) {
+    public function createUser($request)
+    {
         $data = [
             'username' => $request['username'],
             'email' => $request['email'],
@@ -81,7 +85,8 @@ class UserService implements UserServiceInterface {
         return true;
     }
 
-    public function formEdit($id) {
+    public function formEdit($id)
+    {
         $user = User::find($id);
         $role = Role::all();
         return [
@@ -91,7 +96,8 @@ class UserService implements UserServiceInterface {
         ];
     }
 
-    public function updateUser($request, $id) {
+    public function updateUser($request, $id)
+    {
         $data = [
             "username" => $request["username"],
             "email" => $request["email"],
@@ -104,13 +110,15 @@ class UserService implements UserServiceInterface {
         return $user;
     }
 
-    public function userProfile() {
+    public function userProfile()
+    {
         $id = Auth::id();
         $user = User::find($id);
         return $user;
     }
 
-    public function updateUserProfile($request) {
+    public function updateUserProfile($request)
+    {
         if (isset($request["image"])) {
             $username = Auth::user()->username;
             $avatar = Auth::user()->avatar;
@@ -128,7 +136,8 @@ class UserService implements UserServiceInterface {
         return $user;
     }
 
-    public function getSetting() {
+    public function getSetting()
+    {
         $setting = Setting::first();
 
         $data["start_time"] = Carbon::createFromFormat('Hi', $setting["start_time"])->format('g:i a');
@@ -137,7 +146,8 @@ class UserService implements UserServiceInterface {
         return $data;
     }
 
-    public function updateSetting($request) {
+    public function updateSetting($request)
+    {
         $start24 = Carbon::createFromFormat('g:i a', $request["start_time"])->format('Hi');
         $end24 = Carbon::createFromFormat('g:i a', $request["end_time"])->format('Hi');
         $rsUpdate = Setting::where('id',1)->update([
@@ -150,7 +160,8 @@ class UserService implements UserServiceInterface {
         return true;
     }
 
-    private function uploadImage($file, $name, $oldImg = null) {
+    private function uploadImage($file, $name, $oldImg = null)
+    {
         $ext = $file->getClientOriginalExtension();
         $imgName = $this->convertName($name);
         $name = $imgName . rand(0, 10) . ".$ext";
@@ -171,7 +182,8 @@ class UserService implements UserServiceInterface {
         return '/'.$pathImg;
     }
 
-    private function convertName($str) {
+    private function convertName($str)
+    {
         $str = preg_replace("/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/", 'a', $str);
         $str = preg_replace("/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/", 'e', $str);
         $str = preg_replace("/(ì|í|ị|ỉ|ĩ)/", 'i', $str);
