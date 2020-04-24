@@ -49,7 +49,7 @@ class TimesheetService implements TimesheetServiceInterface {
         $timesheetDetail = TimesheetDetail::insert($arrDetail);
 
         // send notification to leader and other users
-        $this->sendEmail();
+        // $this->sendEmail();
     }
 
     public function getDetail($id) {
@@ -99,7 +99,7 @@ class TimesheetService implements TimesheetServiceInterface {
         $timesheetDetail = TimesheetDetail::insert($arrDetail);
 
         // send Email
-        $this->sendEmail();
+        // $this->sendEmail();
     }
 
     public function search($request) {

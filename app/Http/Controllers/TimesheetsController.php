@@ -76,6 +76,12 @@ class TimesheetsController extends Controller
         return view("timesheets.edit", ["timesheet" => $data["timesheet"], 'listTask' => $data["detail"]]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $this->timesheetService->updateTimesheet($request, $id);
+        return redirect()->route("timesheets.index");
+    }
+
     public function member() {
         $timesheets = $this->timesheetService->member();
         return view("timesheets.member", compact("timesheets"));

@@ -13,7 +13,7 @@
           </div>
           <!-- /.card-header -->
           <!-- form start -->
-        <form role="form" method="post" action="{{ route("editTimesheet", $timesheet["id"]) }}">
+        <form role="form" method="put" action="{{ route("timesheets.update", $timesheet["id"]) }}">
           {{ csrf_field() }}
             <div class="card-body">
                 <div class="form-group">
