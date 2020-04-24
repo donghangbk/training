@@ -3,7 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-class ValidationEditUserRequest extends FormRequest
+
+class SearchTimesheetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +24,8 @@ class ValidationEditUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required|string|alpha|max:31',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$this->id, 
-            'role_id' => 'required|numeric',
-            'password' => 'string|min:6|max:20|confirmed|nullable',
-            'password_confirmation' => 'string|min:6|max:20|nullable'
+            "from" => 'date_format:Y-m-d',
+            "to" => 'date_format:Y-m-d'
         ];
     }
 }

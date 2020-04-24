@@ -107,9 +107,9 @@
 <!-- OPTIONAL SCRIPTS -->
 <script src="/plugins/chart.js/Chart.min.js"></script>
 <script>
-  var time = <?php echo $time?>;
-  var totalTimesheet = <?php echo $createByMonth ?>;
-  var delayTimesheet = <?php echo $delayByMonth ?>;
+  var time = {!! $time !!};
+  var totalTimesheet = {!! $createByMonth !!};
+  var delayTimesheet = {!! $delayByMonth !!};
 </script>
 <script src="/js/dashboard.js"></script>
 @endsection

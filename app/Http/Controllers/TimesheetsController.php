@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\SearchRequest;
+use App\Http\Requests\SearchTimesheetRequest;
 use Illuminate\Support\Facades\Log;
 
 use App\Services\Interfaces\TimesheetServiceInterface;
@@ -82,18 +82,13 @@ class TimesheetsController extends Controller
         return redirect()->route("timesheets.index");
     }
 
-    public function member() {
-        $timesheets = $this->timesheetService->member();
+    public function getTimesheetsOfMembers() {
+        $timesheets = $this->timesheetService->getTimesheetsOfMembers();
         return view("timesheets.member", compact("timesheets"));
     }
 
-    public function editTimesheet(Request $request, $id) {
-        $this->timesheetService->updateTimesheet($request, $id);
-        return redirect()->route("timesheets.index");
-    }
-
-    public function search(SearchRequest $request) {
-        $resultSearch = $this->timesheetService->search($request);
+    public function search(SearchTimesheetRequest $request) {
+        $resultSearch = $this->timesheetService->searchTimesheet($request);
         
         return view("timesheets.index")->with("timesheets", $resultSearch);
     }

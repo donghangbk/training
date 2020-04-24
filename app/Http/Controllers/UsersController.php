@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ValidationCreateUserRequest;
-use App\Http\Requests\ValidationEditUserRequest;
-use App\Http\Requests\ValidationUpdateProfileRequest;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\EditUserRequest;
+use App\Http\Requests\UpdateProfileRequest;
 
 use Illuminate\Http\Request;
 use App\Services\Interfaces\UserServiceInterface;
@@ -42,7 +42,7 @@ class UsersController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ValidationCreateUserRequest $request)
+    public function store(CreateUserRequest $request)
     {
         $user = $this->userService->createUser($request);
         // Session::flash('flash_message', 'User successfully added!');
@@ -61,7 +61,7 @@ class UsersController extends Controller {
         return view("users.edit", $data);
     }
 
-    public function editUser(ValidationEditUserRequest $request, $id) {
+    public function update(EditUserRequest $request, $id) {
         $rsUpdate = $this->userService->updateUser($request, $id);
 
         // Session::flash('flash_message', 'User successfully updated!');
@@ -73,18 +73,18 @@ class UsersController extends Controller {
         return view("users.profile", compact("user"));
     }
 
-    public function updateProfile(ValidationUpdateProfileRequest $request) {
+    public function updateProfile(UpdateProfileRequest $request) {
         $user = $this->userService->updateUserProfile($request);
         return redirect()->route("profile");
     }
 
-    public function setting(Request $request) {
-        if ($request->isMethod('get')) {
-            $data = $this->userService->getSetting();
-            return view("users.setting", compact("data"));
-        } else {
-            $rsUpdate = $this->userService->updateSetting($request);
-            return redirect()->route("setting");
-        }
+    public function setting() {
+        $data = $this->userService->getSetting();
+        return view("users.setting", compact("data")); 
+    }
+
+    public function updateSetting(Request $request) {
+        $rsUpdate = $this->userService->updateSetting($request);
+        return redirect()->route("setting");
     }
 }

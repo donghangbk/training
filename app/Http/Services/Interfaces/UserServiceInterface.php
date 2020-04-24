@@ -5,7 +5,7 @@ Interface UserServiceInterface {
 
     public function listUser();
     public function formCreate();
-    public function createUser(Request $request);
+    public function createUser($request);
     public function formEdit($id);
     public function updateUser($request, $id);
     public function userProfile();

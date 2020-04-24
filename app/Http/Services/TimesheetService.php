@@ -22,7 +22,7 @@ class TimesheetService implements TimesheetServiceInterface {
         return $timesheets;
     }
 
-    public function createTimesheet(Request $request) {
+    public function createTimesheet($request) {
         $data = [
             "user_id" => Auth::user()->id,
             "issue" => $request["issue"],
@@ -38,11 +38,11 @@ class TimesheetService implements TimesheetServiceInterface {
         $arrDetail = [];
         for ($i = 1; $i <= $maxId; $i++) {
             $detail = [
-            "timesheet_id" => $timesheet->id,
-            "task_id" => $request["task$i"],
-            "content" => $request["content$i"],
-            "time" => $request["time$i"]
-        ];
+                "timesheet_id" => $timesheet->id,
+                "task_id" => $request["task$i"],
+                "content" => $request["content$i"],
+                "time" => $request["time$i"]
+            ];
             $arrDetail[] = $detail;
         }
 
@@ -61,16 +61,20 @@ class TimesheetService implements TimesheetServiceInterface {
         ];
     }
 
-    public function member() {
+    public function getTimesheetsOfMembers() {
         $idLeader = Auth::id();
-        $timesheets = Timesheet::with("user")->whereHas("user", function($query) use ($idLeader) {
-            $query->where("leader", $idLeader);
-        })->withCount("timesheetDetail as total")->orderBy("timesheets.created_at", "desc")->get();
+        $timesheets = Timesheet::with("user")
+                                ->whereHas("user", function($query) use ($idLeader) {
+                                            $query->where("leader", $idLeader);
+                                            })
+                                ->withCount("timesheetDetail as total")
+                                ->orderBy("timesheets.created_at", "desc")
+                                ->get();
         
         return $timesheets;
     }
 
-    public function updateTimesheet(Request $request, $id) {
+    public function updateTimesheet($request, $id) {
         $data = [
             "issue" => $request["issue"],
             "next_day" => $request["next_day"],
@@ -88,11 +92,11 @@ class TimesheetService implements TimesheetServiceInterface {
         $arrDetail = [];
         for ($i = 1; $i <= $maxId; $i++) {
             $detail = [
-            "timesheet_id" => $id,
-            "task_id" => $request["task$i"],
-            "content" => $request["content$i"],
-            "time" => $request["time$i"]
-        ];
+                "timesheet_id" => $id,
+                "task_id" => $request["task$i"],
+                "content" => $request["content$i"],
+                "time" => $request["time$i"]
+            ];
             $arrDetail[] = $detail;
         }
 
@@ -102,7 +106,7 @@ class TimesheetService implements TimesheetServiceInterface {
         // $this->sendEmail();
     }
 
-    public function search($request) {
+    public function searchTimesheet($request) {
         $from = $request->get("from");
         $to = $request->get("to");
 
@@ -114,6 +118,7 @@ class TimesheetService implements TimesheetServiceInterface {
         $rsSearch = Timesheet::where($conditions)->withCount("timesheetDetail as total")->get();
         return $rsSearch;
     }
+    
     private function sendEmail() {
         // Artisan::queue("notify:timesheet", ["params" => ["userId" => Auth::id(), "username" => Auth::user()->username], '--queue' => 'default']);
         $params = ["userId" => Auth::id(), "username" => Auth::user()->username];
