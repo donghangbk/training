@@ -15,25 +15,35 @@ Route::group(['middleware' => 'auth'], function () {
     // after login
     Route::get('/', 'DashboardController@index')->name('dashboard');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+
     // for user
-    Route::resource('users', 'UsersController')->middleware(['can:user-cant']);
-    Route::post('/deleteUser', 'AjaxController@deleteUser');
-    Route::post('/user/{id}/', 'UsersController@editUser')->name('editUser');
+    // Route::resource('users', 'UsersController')->middleware(['can:user-cant']);
+    Route::get('/users', 'UsersController@index')->name("users.index")->middleware(['can:user-cant']);
+    Route::get('/users/create', 'UsersController@create')->name("users.create")->middleware(['can:user-cant']);
+    Route::post('/users/store', 'UsersController@store')->name("users.store")->middleware(['can:user-cant']);
+    Route::get('/users/{id}/edit', 'UsersController@edit')->name("users.edit")->middleware(['can:user-cant']);
+    Route::post('/users/{id}/update', 'UsersController@update')->name('users.update')->middleware(['can:user-cant']);
     Route::get('/profile', 'UsersController@profile')->name("profile");
     Route::post('/updateProfile', 'UsersController@updateProfile')->name("update_profile");
-    Route::any('/setting', 'UsersController@setting')->name("setting")->middleware(['can:user-cant']);;
-    Route::any('/member', 'TimesheetsController@member')->name("member");
+    Route::get('/setting', 'UsersController@setting')->name("setting")->middleware(['can:user-cant']);;
+    Route::post('/setting', 'UsersController@updateSetting')->name("update_setting")->middleware(['can:user-cant']);;
+    
+    // for ajax
+    Route::post('/users/delete', 'AjaxController@deleteUser');
     Route::post('/approve', 'AjaxController@approve');
-    Route::post('/timesheet/{id}/', 'TimesheetsController@editTimesheet')->name('editTimesheet');
-
+    
     // for timesheet
     // Route::resource('timesheets', 'TimesheetsController')->middleware(['can:admin-cant']);
-    Route::resource('timesheets', 'TimesheetsController');
-    Route::get('timesheet/search', 'TimesheetsController@search')->name("timesheets.search");
+    Route::get('/timesheets', 'TimesheetsController@index')->name("timesheets.index");
+    Route::get('/timesheets/create', 'TimesheetsController@create')->name("timesheets.create");
+    Route::post('/timesheets/store', 'TimesheetsController@store')->name("timesheets.store");
+    Route::get('/timesheets/{id}/show', 'TimesheetsController@show')->name("timesheets.show");
+    Route::get('/timesheets/{id}/edit', 'TimesheetsController@edit')->name("timesheets.edit");
+    Route::put('/timesheets/{id}/update', 'TimesheetsController@update')->name("timesheets.update");
+    Route::get('/timesheet/search', 'TimesheetsController@search')->name("timesheets.search");
+    Route::any('/member', 'TimesheetsController@getTimesheetsOfMembers')->name("member");
+    Route::post('/timesheet/{id}/', 'TimesheetsController@editTimesheet')->name('editTimesheet');
 });
-
-//Route::get('/', 'DashboardController@index');
-
 
 Auth::routes();
 Route::get('/logout', 'DashboardController@logout')->name('logout');

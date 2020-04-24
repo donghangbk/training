@@ -30,7 +30,7 @@ class UserService implements UserServiceInterface {
         ];
     }
 
-    public function createUser(Request $request) {
+    public function createUser($request) {
         $data = [
             'username' => $request['username'],
             'email' => $request['email'],

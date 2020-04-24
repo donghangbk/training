@@ -17,7 +17,7 @@
           </div>
           <!-- /.card-header -->
           <!-- form start -->
-        <form role="form" method="POST" action="{{ route("editUser", $id)}}">
+        <form role="form" method="POST" action="{{ route("users.update", $id)}}">
           {{ csrf_field() }}
             <div class="card-body">
               <div class="form-group">

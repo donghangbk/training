@@ -13,8 +13,9 @@
           </div>
           <!-- /.card-header -->
           <!-- form start -->
-        <form role="form" method="post" action="{{ route("editTimesheet", $timesheet["id"]) }}">
+        <form role="form" method="post" action="{{ route("timesheets.update", $timesheet["id"]) }}">
           {{ csrf_field() }}
+          <input name="_method" type="hidden" value="put" />
             <div class="card-body">
                 <div class="form-group">
                     <label>Date</label>

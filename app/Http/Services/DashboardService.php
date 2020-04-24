@@ -13,7 +13,7 @@ use App\Services\Interfaces\DashboardServiceInterface;
 class DashboardService implements DashboardServiceInterface {
     public function insightTimesheet() {
         // total user
-        $totalUser = User::role(User::ROLE_USER)->count(); // 2 is user;
+        $totalUser = User::role(User::ROLE_USER)->count();
 
         // total timesheet follow current month 
         $totalTsMonth = Timesheet::where('user_id', Auth::id())->whereYear('work_day', date('Y'))->whereMonth('work_day', date('m'))->count();
