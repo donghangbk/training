@@ -38,7 +38,8 @@ class RemindUsers extends Command
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         $conditions = [["work_day", "=", date('Y-m-d')]];
         $listEmail = User::select("email")->whereNotIn("id", function($query) use ($conditions) {
             $query->select("user_id")->from("timesheets")->where($conditions);
@@ -48,7 +49,8 @@ class RemindUsers extends Command
 
     }
 
-    private function sendEmail($listEmail) {
+    private function sendEmail($listEmail)
+    {
         foreach ($listEmail as $email) {
             $this->info("Sent email to: ". $email["email"]);
             $address = $email["email"];

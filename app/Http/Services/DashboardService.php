@@ -10,8 +10,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use App\Services\Interfaces\DashboardServiceInterface;
-class DashboardService implements DashboardServiceInterface {
-    public function insightTimesheet() {
+class DashboardService implements DashboardServiceInterface
+{
+    public function insightTimesheet()
+    {
         // total user
         $totalUser = User::role(User::ROLE_USER)->count();
 

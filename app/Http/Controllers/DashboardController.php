@@ -10,7 +10,8 @@ class DashboardController extends Controller
 {
     protected $dashboardService;
 
-    public function __construct(DashboardServiceInterface $dashboardService) {
+    public function __construct(DashboardServiceInterface $dashboardService)
+    {
         $this->dashboardService = $dashboardService;
     }
     /**
@@ -18,12 +19,14 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
         $data = $this->dashboardService->insightTimesheet();
         return view("dashboard.index", $data);
     }
     
-    public function logout() {
+    public function logout()
+    {
         Auth::logout();
         return redirect('/login');
     }

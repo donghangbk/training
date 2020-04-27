@@ -51,7 +51,8 @@ class NotifyTimesheet extends Command
         }
     }
 
-    private function sendEmail($username, $address) {
+    private function sendEmail($username, $address) 
+    {
             $subject = $username . ' created timesheet. Please check !!!';
             $data = [
                 "address" => $address,
