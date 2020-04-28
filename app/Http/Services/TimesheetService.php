@@ -66,9 +66,11 @@ class TimesheetService implements TimesheetServiceInterface
     {
         $idLeader = Auth::id();
         $timesheets = Timesheet::join("users", "user_id", "users.id")
+                                ->join("timesheet_detail", "timesheet_id", "timesheets.id")
                                 ->where("users.leader", $idLeader)
-                                ->withCount("timesheetDetail as total")
                                 ->orderBy("timesheets.created_at", "desc")
+                                ->select("timesheets.*", DB::raw('count(timesheets.id) as total'))
+                                ->groupBy("timesheets.id")
                                 ->get();
 
         return $timesheets;
@@ -113,7 +115,11 @@ class TimesheetService implements TimesheetServiceInterface
             ["work_day", ">=", $from],
             ["work_day", "<=", $to]
         ];
-        $rsSearch = Timesheet::where($conditions)->withCount("timesheetDetail as total")->get();
+        $rsSearch = Timesheet::where($conditions)
+                                ->select("timesheets.*", DB::raw('count(timesheets.id) as total'))
+                                ->groupBy("timesheets.id")
+                                ->orderBy("timesheets.created_at", "desc")
+                                ->get();
         return $rsSearch;
     }
 
@@ -132,7 +138,5 @@ class TimesheetService implements TimesheetServiceInterface
         //     $email = $receiverId->info->email;
         //     Mail::to($email)->queue(new SendMailable($params));
         // }
-
-        // return false;
     }
 }
