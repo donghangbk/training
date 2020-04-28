@@ -43,23 +43,31 @@ $(document).ready(function() {
         }
     });
 
-    // show fomr add task
-    var i = 2;
+    // show form add task
     $("#add").click(function(e) {
-        $("#listTask").append("<div class='row' style='margin-top:10px'>" +
-        "<div class='col-3'>"+
-          "<input type='text' class='form-control' placeholder='task id' name='task_id"+i+"' >"+
-        "</div>"+
-        "<div class='col-5'>"+
-          "<textarea rows='2' class='form-control' placeholder='content' name='content"+i+"' required></textarea>"+
-        "</div>"+
-        "<div class='col-2'>"+
-          "<input type='number' class='form-control' placeholder='time ( minutes)' name='time"+i+"' required>"+
-        "</div>"+
-      "</div>"+
- "</div>");
+        $("#listTask").append(
+            "<div class='row' id='"+ i + "' style='margin-top:10px'>" +
+                "<div class='col-3'>"+
+                "<input type='text' class='form-control' placeholder='task id' name='task["+i+"][taskId]' >"+
+                "</div>"+
+                "<div class='col-5'>"+
+                "<textarea rows='2' class='form-control' placeholder='content' name='task["+i+"][content]' required></textarea>"+
+                "</div>"+
+                "<div class='col-2'>"+
+                "<input type='number' class='form-control' placeholder='time ( minutes)' name='task["+i+"][time]' required>"+
+                "</div>"+
+                "<div class='col-2'>"+
+                "<i class='fas fa-minus-circle' data-id='"+i+"' style='color:red'></i>"+
+                "</div>"+
+            "</div>");
         i++;
     })
+
+    // remove task
+    $(".fa-minus-circle").click(function(e) {
+        var id = $(this).attr("data-id");
+        $("#"+id+"").remove();
+    });
 
     // approved
     $('.approve').on('change', function () {

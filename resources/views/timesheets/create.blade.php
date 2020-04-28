@@ -46,17 +46,17 @@
               <div id="listTask">
                 <div class="row">
                     <div class="col-3">
-                      <input type="text" class="form-control" placeholder="task id" name="task_id1" >
+                      <input type="text" class="form-control" placeholder="task id" name="task[0][taskId]">
                     </div>
                     <div class="col-5">
-                      <textarea rows="2" class="form-control" placeholder="content" name="content1" required></textarea>
+                      <textarea rows="2" class="form-control" placeholder="content" name="task[0][content]" required></textarea>
                     </div>
                     <div class="col-2">
-                      <input type="number" class="form-control" placeholder="time ( minutes)" name="time1" required>
+                      <input type="number" class="form-control" placeholder="time ( minutes)" name="task[0][time]" required>
                     </div>
                     <div class="col-2">
                         <i class="fas fa-minus-circle" style="color:red"></i>
-                      </div>
+                    </div>
                   </div>
               </div>
               <div class="row" style="color:green">
@@ -83,7 +83,8 @@
 <script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}""></script>
 <script src="{{ asset('js/user.js') }}"></script>
 <script>
-   //Money Euro
-    $('[data-mask]').inputmask()
+  var i = 1;
+  //Money Euro
+  $('[data-mask]').inputmask()
 </script>
 @endsection

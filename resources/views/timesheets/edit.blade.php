@@ -41,23 +41,21 @@
                 @endif
               </div>
               <div id="listTask">
-                  <?php $i = 1;?>
-                @foreach ($listTask as $item)
-                <div class="row" style="margin-top:10px;">
+                @foreach ($listTask as $k => $item)
+                  <div class="row" style="margin-top:10px;">
                     <div class="col-3">
-                    <input type="text" class="form-control" placeholder="task id" name="task_id{{ $i}}" value="{{old("task_id", $item["task_id"])}}">
+                    <input type="text" class="form-control" placeholder="task id" name="task[{{$k}}][taskId]" value="{{old("task_id", $item["task_id"])}}">
                     </div>
                     <div class="col-5">
-                      <textarea rows="2" class="form-control" placeholder="content" name="content{{ $i}}" required>{{old("content", $item["content"])}}</textarea>
+                      <textarea rows="2" class="form-control" placeholder="content" name="task[{{$k}}][content]" required>{{old("content", $item["content"])}}</textarea>
                     </div>
                     <div class="col-2">
-                      <input type="number" class="form-control" placeholder="time ( minutes)" name="time{{ $i}}" required value="{{old("time", $item["time"])}}">
+                      <input type="number" class="form-control" placeholder="time ( minutes)" name="task[{{$k}}][time]" required value="{{old("time", $item["time"])}}">
                     </div>
                     <div class="col-2">
                         <i class="fas fa-minus-circle" style="color:red"></i>
                       </div>
                   </div>
-                  <?php $i++;?>
                 @endforeach
               </div>
               <div class="row" style="color:green">
@@ -84,7 +82,7 @@
 <script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}""></script>
 <script src="{{ asset('js/user.js') }}"></script>
 <script>
-    var i = {{ $i++}};
+    var i = {{ count($listTask) }};
    //Money Euro
     $('[data-mask]').inputmask()
 </script>

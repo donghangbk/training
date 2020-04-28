@@ -19,7 +19,7 @@ class UserService implements UserServiceInterface
 
     public function listUser()
     {
-        $listUser = User::orderBy('id', 'desc')->get();;
+        $listUser = User::orderBy('id', 'desc')->get();
         return $listUser;
     }
 
