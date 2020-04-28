@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Artisan;
 use Mail;
-
+use DB;
 use App\Services\Interfaces\TimesheetServiceInterface;
 
 class TimesheetService implements TimesheetServiceInterface
@@ -27,24 +27,20 @@ class TimesheetService implements TimesheetServiceInterface
     public function createTimesheet($request)
     {
         $data = [
-            "user_id" => Auth::user()->id,
+            "user_id" => Auth::id(),
             "issue" => $request["issue"],
             "next_day" => $request["next_day"],
             "work_day" => $request["work_day"]
         ];
         $timesheet = Timesheet::create($data);
 
-        $list = $request->all();
-        $totalField = count($list);
-        $maxId = ($totalField - 4) / 3;
-
         $arrDetail = [];
-        for ($i = 1; $i <= $maxId; $i++) {
+        foreach ($request->task as $item) {
             $detail = [
                 "timesheet_id" => $timesheet->id,
-                "task_id" => $request["task$i"],
-                "content" => $request["content$i"],
-                "time" => $request["time$i"]
+                "task_id" => $item["taskId"],
+                "content" => $item["content"],
+                "time" => $item["time"]
             ];
             $arrDetail[] = $detail;
         }
@@ -58,7 +54,7 @@ class TimesheetService implements TimesheetServiceInterface
     public function getDetail($id)
     {
         $timesheet = Timesheet::find($id);
-        $detail = Timesheet::find($id)->timesheetDetail;
+        $detail = $timesheet->timesheetDetail;
         return [
             "timesheet" => $timesheet,
             "detail" => $detail
@@ -68,14 +64,12 @@ class TimesheetService implements TimesheetServiceInterface
     public function getTimesheetsOfMembers()
     {
         $idLeader = Auth::id();
-        $timesheets = Timesheet::with("user")
-                                ->whereHas("user", function($query) use ($idLeader) {
-                                            $query->where("leader", $idLeader);
-                                            })
+        $timesheets = Timesheet::join("users", "user_id", "users.id")
+                                ->where("users.leader", $idLeader)
                                 ->withCount("timesheetDetail as total")
                                 ->orderBy("timesheets.created_at", "desc")
                                 ->get();
-        
+
         return $timesheets;
     }
 
@@ -89,19 +83,15 @@ class TimesheetService implements TimesheetServiceInterface
         ];
         $timesheet = Timesheet::where("id", $id)->update($data);
 
-        $list = $request->all();
-        $totalField = count($list);
-        $maxId = ($totalField - 4) / 3;
-
         // delete detail of timesheet_id after updating
         $rsDelete = TimesheetDetail::where("timesheet_id", $id)->delete();
         $arrDetail = [];
-        for ($i = 1; $i <= $maxId; $i++) {
+        foreach ($request->task as $item) {
             $detail = [
                 "timesheet_id" => $id,
-                "task_id" => $request["task$i"],
-                "content" => $request["content$i"],
-                "time" => $request["time$i"]
+                "task_id" => $item["taskId"],
+                "content" => $item["content"],
+                "time" => $item["time"]
             ];
             $arrDetail[] = $detail;
         }
@@ -128,7 +118,7 @@ class TimesheetService implements TimesheetServiceInterface
 
     private function sendEmail()
     {
-        // Artisan::queue("notify:timesheet", ["params" => ["userId" => Auth::id(), "username" => Auth::user()->username], '--queue' => 'default']);
+        // Artisan::queue("notify:timesheet", ["params" => ["userId" => Auth::id(), "username" => Auth::user()->username], '--queue' => 'remide]);
         $params = ["userId" => Auth::id(), "username" => Auth::user()->username];
 
         $listReceiverId = UserNotification::where("user_id", $params["userId"])->select("user_receive_id")->get();
@@ -137,5 +127,7 @@ class TimesheetService implements TimesheetServiceInterface
             $email = $receiverId->info->email;
             Mail::to($email)->queue(new SendMailable($params));
         }
+
+        return false;
     }
 }
