@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
+use App\Jobs\NotifyTimesheet;
 use App\Models\User;
 use App\Models\Timesheet;
 use App\Models\TimesheetDetail;
@@ -118,16 +119,20 @@ class TimesheetService implements TimesheetServiceInterface
 
     private function sendEmail()
     {
+        // C1
         // Artisan::queue("notify:timesheet", ["params" => ["userId" => Auth::id(), "username" => Auth::user()->username], '--queue' => 'remide]);
-        $params = ["userId" => Auth::id(), "username" => Auth::user()->username];
+        $user = ["userId" => Auth::id(), "username" => Auth::user()->username];
 
-        $listReceiverId = UserNotification::where("user_id", $params["userId"])->select("user_receive_id")->get();
+        NotifyTimesheet::dispatch($user);
+
+        //C3
+        // $listReceiverId = UserNotification::where("user_id", $params["userId"])->select("user_receive_id")->get();
         
-        foreach ($listReceiverId as $receiverId) {
-            $email = $receiverId->info->email;
-            Mail::to($email)->queue(new SendMailable($params));
-        }
+        // foreach ($listReceiverId as $receiverId) {
+        //     $email = $receiverId->info->email;
+        //     Mail::to($email)->queue(new SendMailable($params));
+        // }
 
-        return false;
+        // return false;
     }
 }

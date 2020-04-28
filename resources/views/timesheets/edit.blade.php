@@ -42,7 +42,7 @@
               </div>
               <div id="listTask">
                 @foreach ($listTask as $k => $item)
-                  <div class="row" style="margin-top:10px;">
+                  <div class="row" style="margin-top:10px;" id="{{ $k }}">
                     <div class="col-3">
                     <input type="text" class="form-control" placeholder="task id" name="task[{{$k}}][taskId]" value="{{old("task_id", $item["task_id"])}}">
                     </div>
@@ -53,7 +53,7 @@
                       <input type="number" class="form-control" placeholder="time ( minutes)" name="task[{{$k}}][time]" required value="{{old("time", $item["time"])}}">
                     </div>
                     <div class="col-2">
-                        <i class="fas fa-minus-circle" style="color:red"></i>
+                        <i class="fas fa-minus-circle" style="color:red" data-id="{{ $k }}"></i>
                       </div>
                   </div>
                 @endforeach
