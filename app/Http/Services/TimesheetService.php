@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
+use App\Jobs\NotifyTimesheet;
 use App\Models\User;
 use App\Models\Timesheet;
 use App\Models\TimesheetDetail;
@@ -65,9 +66,11 @@ class TimesheetService implements TimesheetServiceInterface
     {
         $idLeader = Auth::id();
         $timesheets = Timesheet::join("users", "user_id", "users.id")
+                                ->join("timesheet_detail", "timesheet_id", "timesheets.id")
                                 ->where("users.leader", $idLeader)
-                                ->withCount("timesheetDetail as total")
                                 ->orderBy("timesheets.created_at", "desc")
+                                ->select("timesheets.*", DB::raw('count(timesheets.id) as total'))
+                                ->groupBy("timesheets.id")
                                 ->get();
 
         return $timesheets;
@@ -112,22 +115,28 @@ class TimesheetService implements TimesheetServiceInterface
             ["work_day", ">=", $from],
             ["work_day", "<=", $to]
         ];
-        $rsSearch = Timesheet::where($conditions)->withCount("timesheetDetail as total")->get();
+        $rsSearch = Timesheet::where($conditions)
+                                ->select("timesheets.*", DB::raw('count(timesheets.id) as total'))
+                                ->groupBy("timesheets.id")
+                                ->orderBy("timesheets.created_at", "desc")
+                                ->get();
         return $rsSearch;
     }
 
     private function sendEmail()
     {
+        // C1
         // Artisan::queue("notify:timesheet", ["params" => ["userId" => Auth::id(), "username" => Auth::user()->username], '--queue' => 'remide]);
-        $params = ["userId" => Auth::id(), "username" => Auth::user()->username];
+        $user = ["userId" => Auth::id(), "username" => Auth::user()->username];
 
-        $listReceiverId = UserNotification::where("user_id", $params["userId"])->select("user_receive_id")->get();
+        NotifyTimesheet::dispatch($user);
+
+        //C3
+        // $listReceiverId = UserNotification::where("user_id", $params["userId"])->select("user_receive_id")->get();
         
-        foreach ($listReceiverId as $receiverId) {
-            $email = $receiverId->info->email;
-            Mail::to($email)->queue(new SendMailable($params));
-        }
-
-        return false;
+        // foreach ($listReceiverId as $receiverId) {
+        //     $email = $receiverId->info->email;
+        //     Mail::to($email)->queue(new SendMailable($params));
+        // }
     }
 }

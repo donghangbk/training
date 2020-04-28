@@ -64,7 +64,7 @@ $(document).ready(function() {
     })
 
     // remove task
-    $(".fa-minus-circle").click(function(e) {
+    $(document).on('click', '.fa-minus-circle', function(e) {
         var id = $(this).attr("data-id");
         $("#"+id+"").remove();
     });

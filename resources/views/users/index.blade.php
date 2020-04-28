@@ -106,6 +106,7 @@
                     @endif
                 </tbody>
             </table>
+            {{ $listUser->links('partials.pagination', ["page" => $listUser])}}
         </div>
         <!-- /.card-body -->
 @endsection

@@ -16,10 +16,11 @@ use App\Services\Interfaces\UserServiceInterface;
 
 class UserService implements UserServiceInterface
 {
+    public $paging = 5;
 
     public function listUser()
     {
-        $listUser = User::orderBy('id', 'desc')->get();
+        $listUser = User::orderBy('id', 'desc')->paginate($this->paging);
         return $listUser;
     }
 

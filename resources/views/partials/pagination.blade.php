@@ -1,15 +1,15 @@
-<nav aria-label="Page navigation example">
+<nav aria-label="Page navigation example" class="mt-2">
   <ul class="pagination justify-content-end">
-    <li class="page-item">
-      <a class="page-link" href="#" aria-label="Previous">
+    <li class="page-item {{ $page->currentPage() == 1 ? 'disabled' : ''}}">
+      <a class="page-link" href="{{ $page->previousPageUrl() }}" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#" aria-label="Next">
+    @for ($i = 1; $i <= ceil($page->total() / $page->perPage()); $i++)
+    <li class="page-item {{ $page->currentPage() == $i ? 'disabled' : ''}}"><a class="page-link" href="{{ $page->url($i) }}">{{ $i }}</a></li>
+    @endfor
+    <li class="page-item {{ $page->currentPage() == $page->lastPage() ? 'disabled' : ''}}">
+      <a class="page-link" href="{{ $page->nextPageUrl()}}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

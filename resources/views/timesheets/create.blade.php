@@ -54,9 +54,6 @@
                     <div class="col-2">
                       <input type="number" class="form-control" placeholder="time ( minutes)" name="task[0][time]" required>
                     </div>
-                    <div class="col-2">
-                        <i class="fas fa-minus-circle" style="color:red"></i>
-                    </div>
                   </div>
               </div>
               <div class="row" style="color:green">
