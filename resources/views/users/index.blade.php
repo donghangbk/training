@@ -106,7 +106,7 @@
                     @endif
                 </tbody>
             </table>
-            {{ $listUser->links('partials.pagination', ["page" => $listUser])}}
+            {{ $listUser->count() != 0 ? $listUser->links('partials.pagination', ["page" => $listUser]) : ''}}
         </div>
         <!-- /.card-body -->
 @endsection
