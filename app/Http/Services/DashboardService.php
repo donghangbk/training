@@ -32,7 +32,7 @@ class DashboardService implements DashboardServiceInterface
                              ->whereDate("created_at", "<>", DB::raw('DATE(work_day)')) // create timesheet the next day
                              ->where(DB::raw('DATE_FORMAT(work_day, "%Y/%m")'),  date("Y/m"))          // limit 1 month
                              ->orwhere("created_at", ">", DB::raw($orWhere)) // after end_time setting
-                            ->count();
+                             ->count();
            
         $createByMonth = Timesheet::where("user_id", Auth::id())
                                 ->where(DB::raw('DATE_FORMAT(work_day, "%Y/%m")'), ">=",  $oneAgo) // limit 1 year
