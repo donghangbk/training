@@ -26,23 +26,24 @@ class DashboardService implements DashboardServiceInterface
         // total timesheet late in month
         $setting = Setting::first();
         $orWhere = 'CONCAT(DATE(CREATED_AT)," ",'. substr($setting["end_time"], 0, 2).', ":", '. substr($setting["end_time"], 2, 3).' , ":00")';
-        $oneAgo = date('m/Y', strtotime('-1 year'));
+        $oneAgo = date('Y/m', strtotime('-1 year'));
+
         $totalLateTimesheet = Timesheet::where("user_id", Auth::id())
                              ->whereDate("created_at", "<>", DB::raw('DATE(work_day)')) // create timesheet the next day
-                             ->where(DB::raw('DATE_FORMAT(work_day, "%m/%Y")'),  date("m/Y"))          // limit 1 month
+                             ->where(DB::raw('DATE_FORMAT(work_day, "%Y/%m")'),  date("Y/m"))          // limit 1 month
                              ->orwhere("created_at", ">", DB::raw($orWhere)) // after end_time setting
                             ->count();
            
         $createByMonth = Timesheet::where("user_id", Auth::id())
-                                ->where(DB::raw('DATE_FORMAT(work_day, "%m/%Y")'), ">=",  $oneAgo) // limit 1 year
+                                ->where(DB::raw('DATE_FORMAT(work_day, "%Y/%m")'), ">=",  $oneAgo) // limit 1 year
                                 ->select(DB::raw('DATE_FORMAT(work_day, "%m/%Y") AS datee'), DB::raw('COUNT(id) total'))
                                 ->groupBy(DB::raw('DATE_FORMAT(work_day, "%m/%Y")'))
                                 ->orderBy("datee")
                                 ->get();
 
         $delayByMonth = Timesheet::where("user_id", Auth::id())
-                                ->whereDate("created_at", "<>", "work_day") // create timesheet the next day
-                                ->where(DB::raw('DATE_FORMAT(work_day, "%m/%Y")'), ">=",  $oneAgo)          // limit 1 year
+                                ->whereDate("created_at", "<>", DB::raw('DATE(work_day)')) // create timesheet the next day
+                                ->where(DB::raw('DATE_FORMAT(work_day, "%Y/%m")'), ">=",  $oneAgo)          // limit 1 year
                                 ->orwhere("created_at", ">", DB::raw($orWhere)) // after end_time setting
                                 ->select(DB::raw('DATE_FORMAT(work_day, "%m/%Y") AS datee'), DB::raw('COUNT(id) total'))
                                 ->groupBy(DB::raw('DATE_FORMAT(work_day, "%m/%Y")'))
