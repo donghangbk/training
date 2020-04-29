@@ -151,10 +151,12 @@ class UserService implements UserServiceInterface
     {
         $start24 = Carbon::createFromFormat('g:i a', $request["start_time"])->format('Hi');
         $end24 = Carbon::createFromFormat('g:i a', $request["end_time"])->format('Hi');
-        $rsUpdate = Setting::where('id',1)->update([
-            "start_time" => $start24,
-            "end_time" => $end24
-        ]);
+        $rsUpdate = Setting::where('id',1)
+                            ->update([
+                                "start_time" => $start24,
+                                "end_time" => $end24
+                            ]);
+
         if (!$rsUpdate) {
             return false;
         }

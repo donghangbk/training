@@ -35,18 +35,20 @@ class TimesheetService implements TimesheetServiceInterface
         ];
         $timesheet = Timesheet::create($data);
 
-        $arrDetail = [];
-        foreach ($request->task as $item) {
-            $detail = [
-                "timesheet_id" => $timesheet->id,
-                "task_id" => $item["taskId"],
-                "content" => $item["content"],
-                "time" => $item["time"]
-            ];
-            $arrDetail[] = $detail;
-        }
+        if (isset($request->task)) {
+            $arrDetail = [];
+            foreach ($request->task as $item) {
+                $detail = [
+                    "timesheet_id" => $timesheet->id,
+                    "task_id" => $item["taskId"],
+                    "content" => $item["content"],
+                    "time" => $item["time"]
+                ];
+                $arrDetail[] = $detail;
+            }
 
-        $timesheetDetail = TimesheetDetail::insert($arrDetail);
+            $timesheetDetail = TimesheetDetail::insert($arrDetail);
+        }
 
         // send notification to leader and other users
         // $this->sendEmail();
@@ -69,7 +71,7 @@ class TimesheetService implements TimesheetServiceInterface
                                 ->join("timesheet_detail", "timesheet_id", "timesheets.id")
                                 ->where("users.leader", $idLeader)
                                 ->orderBy("timesheets.created_at", "desc")
-                                ->select("timesheets.*", DB::raw('count(timesheets.id) as total'))
+                                ->select("timesheets.*", "users.username", DB::raw('count(timesheets.id) as total'))
                                 ->groupBy("timesheets.id")
                                 ->get();
 
@@ -88,18 +90,21 @@ class TimesheetService implements TimesheetServiceInterface
 
         // delete detail of timesheet_id after updating
         $rsDelete = TimesheetDetail::where("timesheet_id", $id)->delete();
-        $arrDetail = [];
-        foreach ($request->task as $item) {
-            $detail = [
-                "timesheet_id" => $id,
-                "task_id" => $item["taskId"],
-                "content" => $item["content"],
-                "time" => $item["time"]
-            ];
-            $arrDetail[] = $detail;
+        
+        if (isset($request->task)) {
+            $arrDetail = [];
+            foreach ($listTask as $item) {
+                $detail = [
+                    "timesheet_id" => $id,
+                    "task_id" => $item["taskId"],
+                    "content" => $item["content"],
+                    "time" => $item["time"]
+                ];
+                $arrDetail[] = $detail;
+            }
+    
+            $timesheetDetail = TimesheetDetail::insert($arrDetail);
         }
-
-        $timesheetDetail = TimesheetDetail::insert($arrDetail);
 
         // send Email
         // $this->sendEmail();

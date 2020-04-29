@@ -18,7 +18,10 @@ class DashboardService implements DashboardServiceInterface
         $totalUser = User::role(User::ROLE_USER)->count();
 
         // total timesheet follow current month 
-        $totalTsMonth = Timesheet::where('user_id', Auth::id())->whereYear('work_day', date('Y'))->whereMonth('work_day', date('m'))->count();
+        $totalTsMonth = Timesheet::where('user_id', Auth::id())
+                                ->whereYear('work_day', date('Y'))
+                                ->whereMonth('work_day', date('m'))
+                                ->count();
 
         // total member of user who login
         $totalMemberOfUser = User::where("leader", Auth::id())->count();
@@ -29,10 +32,12 @@ class DashboardService implements DashboardServiceInterface
         $oneAgo = date('Y/m', strtotime('-1 year'));
 
         $totalLateTimesheet = Timesheet::where("user_id", Auth::id())
-                             ->whereDate("created_at", "<>", DB::raw('DATE(work_day)')) // create timesheet the next day
-                             ->where(DB::raw('DATE_FORMAT(work_day, "%Y/%m")'),  date("Y/m"))          // limit 1 month
-                             ->orwhere("created_at", ">", DB::raw($orWhere)) // after end_time setting
-                             ->count();
+                                ->where(DB::raw('DATE_FORMAT(work_day, "%Y/%m")'),  date("Y/m"))          // limit 1 month
+                                ->where(function($query) use ($orWhere) {
+                                    $query->whereDate("created_at", "<>", DB::raw('DATE(work_day)')) // create timesheet the next day
+                                          ->orwhere("created_at", ">", DB::raw($orWhere)); // after end_time setting
+                                })
+                                ->count();
            
         $createByMonth = Timesheet::where("user_id", Auth::id())
                                 ->where(DB::raw('DATE_FORMAT(work_day, "%Y/%m")'), ">=",  $oneAgo) // limit 1 year
@@ -42,9 +47,11 @@ class DashboardService implements DashboardServiceInterface
                                 ->get();
 
         $delayByMonth = Timesheet::where("user_id", Auth::id())
-                                ->whereDate("created_at", "<>", DB::raw('DATE(work_day)')) // create timesheet the next day
                                 ->where(DB::raw('DATE_FORMAT(work_day, "%Y/%m")'), ">=",  $oneAgo)          // limit 1 year
-                                ->orwhere("created_at", ">", DB::raw($orWhere)) // after end_time setting
+                                ->where(function($query) use ($orWhere) {
+                                    $query->whereDate("created_at", "<>", DB::raw('DATE(work_day)')) // create timesheet the next day
+                                          ->orwhere("created_at", ">", DB::raw($orWhere)); // after end_time setting
+                                })
                                 ->select(DB::raw('DATE_FORMAT(work_day, "%m/%Y") AS datee'), DB::raw('COUNT(id) total'))
                                 ->groupBy(DB::raw('DATE_FORMAT(work_day, "%m/%Y")'))
                                 ->orderBy("datee")

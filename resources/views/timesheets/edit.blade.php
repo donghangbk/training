@@ -17,27 +17,27 @@
           {{ csrf_field() }}
           <input name="_method" type="hidden" value="put" />
             <div class="card-body">
-                <div class="form-group">
-                    <label>Date</label>
-                    <div class="input-group" id="datetimepicker7" data-target-input="nearest">
-                      <div class="input-group-prepend" data-target="#datetimepicker7" data-toggle="datetimepicker">
-                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                      </div>
-                      <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker7" name="work_day" value="{{ old('work_day', $timesheet["work_day"])}}" required>
-                    </div>
-                  </div>
+              <div class="form-group">
+                <label>Date</label>
+                <div class="input-group" id="datetimepicker7" data-target-input="nearest">
+                <div class="input-group-prepend" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                  <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                </div>
+                <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker7" name="work_day" value="{{ old('work_day', $timesheet["work_day"])}}" required>
+                </div>
+              </div>
               <div class="form-group">
                 <label for="exampleInputEmail1">Issue</label>
                 <textarea rows="5" class="form-control" placeholder="Issue" name="issue" >{{ old("issue", $timesheet["issue"]) }}</textarea>
                 @if ($errors->has("issue"))
-                <span class="text-danger">{{ $errors->first("issue") }}</span>
+                  <span class="text-danger">{{ $errors->first("issue") }}</span>
                 @endif
               </div>
               <div class="form-group">
                 <label for="exampleInputEmail1">Next day</label>
-              <textarea type="text" class="form-control" name="next_day" rows="5"> {{old("next_day", $timesheet["next_day"])}}</textarea>
+                <textarea type="text" class="form-control" name="next_day" rows="5"> {{old("next_day", $timesheet["next_day"])}}</textarea>
                 @if ($errors->has("next_day"))
-                <span class="text-danger">{{ $errors->first("next_day") }}</span>
+                  <span class="text-danger">{{ $errors->first("next_day") }}</span>
                 @endif
               </div>
               <div id="listTask">

@@ -33,14 +33,14 @@
                 <label for="exampleInputEmail1">Issue</label>
                 <textarea rows="5" class="form-control" placeholder="Issue" name="issue" value="{{ old("issue") }}"></textarea>
                 @if ($errors->has("issue"))
-                <span class="text-danger">{{ $errors->first("issue") }}</span>
+                  <span class="text-danger">{{ $errors->first("issue") }}</span>
                 @endif
               </div>
               <div class="form-group">
                 <label for="exampleInputEmail1">Next day</label>
               <textarea type="text" class="form-control" name="next_day" rows="5"> {{old("next_day")}}</textarea>
                 @if ($errors->has("next_day"))
-                <span class="text-danger">{{ $errors->first("next_day") }}</span>
+                  <span class="text-danger">{{ $errors->first("next_day") }}</span>
                 @endif
               </div>
               <div id="listTask">
