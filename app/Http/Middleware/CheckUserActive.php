@@ -17,10 +17,10 @@ class CheckUserActive
     {
         if ($user = \Auth::user()) {
             if (!$user->is_active) {
-                return redirect('/login');
+                throw new \App\Exceptions\InActiveException("in_active");
             }
         }
-
+        
         return $next($request);
     }
 }
