@@ -4,7 +4,6 @@
     <div class="card">
         <div class="card-header">
           <h3 class="card-title">Detail</h3>
-
         </div>
         <div class="card-body">
           <div class="row">
@@ -24,11 +23,11 @@
                   </thead>
                   <tbody>
                       @foreach ($detail as $item)
-                      <tr>
-                        <td>{{ $item["task_id"] }}</td>
-                        <td>{{ $item["content"] }}</td>
-                        <td>{{ $item["time"] }}</td>
-                      </tr>
+                        <tr>
+                          <td>{{ $item["task_id"] }}</td>
+                          <td>{{ $item["content"] }}</td>
+                          <td>{{ $item["time"] }}</td>
+                        </tr>
                       @endforeach
                   </tbody>
               </table>
@@ -44,6 +43,6 @@
           </div>
         </div>
         <!-- /.card-body -->
-      </div>
+    </div>
       <!-- /.card -->
 @endsection

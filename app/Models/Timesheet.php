@@ -13,7 +13,13 @@ class Timesheet extends Model {
         return $this->hasMany('App\Models\TimesheetDetail', 'timesheet_id', 'id');
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return date("d-m-Y", strtotime($value));
     }
 }
