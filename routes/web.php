@@ -11,22 +11,23 @@
 |
 */
 
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth', 'is_active']], function () {
     // after login
     Route::get('/', 'DashboardController@index')->name('dashboard');
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
     // for user
-    // Route::resource('users', 'UsersController')->middleware(['can:user-cant']);
-    Route::get('/users', 'UsersController@index')->name("users.index")->middleware(['can:user-cant']);
-    Route::get('/users/create', 'UsersController@create')->name("users.create")->middleware(['can:user-cant']);
-    Route::post('/users/store', 'UsersController@store')->name("users.store")->middleware(['can:user-cant']);
-    Route::get('/users/{id}/edit', 'UsersController@edit')->name("users.edit")->middleware(['can:user-cant']);
-    Route::post('/users/{id}/update', 'UsersController@update')->name('users.update')->middleware(['can:user-cant']);
+    Route::group(['middleware'  => 'can:user-cant'], function() {
+        Route::get('/users', 'UsersController@index')->name('users.index');
+        Route::get('/users/create', 'UsersController@create')->name('users.create');
+        Route::post('/users/store', 'UsersController@store')->name('users.store');
+        Route::get('/users/{id}/edit', 'UsersController@edit')->name('users.edit');
+        Route::post('/users/{id}/update', 'UsersController@update')->name('users.update');
+        Route::get('/setting', 'UsersController@setting')->name('setting');
+        Route::post('/setting', 'UsersController@updateSetting')->name('update_setting');
+    });
     Route::get('/profile', 'UsersController@profile')->name("profile");
     Route::post('/updateProfile', 'UsersController@updateProfile')->name("update_profile");
-    Route::get('/setting', 'UsersController@setting')->name("setting")->middleware(['can:user-cant']);;
-    Route::post('/setting', 'UsersController@updateSetting')->name("update_setting")->middleware(['can:user-cant']);;
     
     // for ajax
     Route::post('/users/delete', 'AjaxController@deleteUser');
