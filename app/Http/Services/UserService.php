@@ -47,7 +47,7 @@ class UserService implements UserServiceInterface
         // mark to have leader
         $haveLeader = false;
         if (!empty($request["leader"])) {
-            $data['leader'] = $request['leader'];  
+            $data['leader'] = $request['leader'];
             $haveLeader = true;
         }
 
@@ -64,7 +64,6 @@ class UserService implements UserServiceInterface
                     continue;
                 }
                 $arr = [
-                    'user_id' => $newUser->id,
                     'user_receive_id' => $item
                 ];
                 $arrNoti[] = $arr;
@@ -74,14 +73,13 @@ class UserService implements UserServiceInterface
         // add leader to notification
         if ($haveLeader) {
             $arrNoti[] = [
-                'user_id' => $newUser->id,
                 'user_receive_id' => $request["leader"]
             ];
         }
 
         // add notifincations
         if (count($arrNoti) > 0) {
-            $noti = UserNotification::insert($arrNoti);
+            $noti = $newUser->notifications()->createMany($arrNoti);
         }
         return true;
     }
@@ -151,7 +149,7 @@ class UserService implements UserServiceInterface
     {
         $start24 = Carbon::createFromFormat('g:i a', $request["start_time"])->format('Hi');
         $end24 = Carbon::createFromFormat('g:i a', $request["end_time"])->format('Hi');
-        $rsUpdate = Setting::where('id',1)
+        $rsUpdate = Setting::find(1)
                             ->update([
                                 "start_time" => $start24,
                                 "end_time" => $end24

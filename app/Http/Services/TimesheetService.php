@@ -39,7 +39,6 @@ class TimesheetService implements TimesheetServiceInterface
             $arrDetail = [];
             foreach ($request->task as $item) {
                 $detail = [
-                    "timesheet_id" => $timesheet->id,
                     "task_id" => $item["taskId"],
                     "content" => $item["content"],
                     "time" => $item["time"]
@@ -47,7 +46,7 @@ class TimesheetService implements TimesheetServiceInterface
                 $arrDetail[] = $detail;
             }
 
-            $timesheetDetail = TimesheetDetail::insert($arrDetail);
+            $timesheetDetail = $timesheet->timesheetDetail()->createMany($arrDetail);
         }
 
         // send notification to leader and other users
