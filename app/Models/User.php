@@ -6,11 +6,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, SoftDeletes;
 
     protected $table = 'users';
+    protected $dates = ['deleted_at'];
 
     const ROLE_ADMIN = 1;
     const ROLE_USER = 2;
@@ -27,6 +29,15 @@ class User extends Authenticatable
     //     'created_at' => 'datetime:m-d-Y',
     // ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($model) {
+            $model->is_active = 0;
+            $model->save();
+        });
+    }
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -42,6 +53,11 @@ class User extends Authenticatable
 
     public function detail() {
         return $this->hasManyThrough('App\Models\Timesheet', 'App\Models\TimesheetDetail', 'timesheet_id','user_id', 'id', 'id');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany('App\Models\UserNotification', 'user_id', 'id');
     }
 
     public function getCreatedAtAttribute($value)

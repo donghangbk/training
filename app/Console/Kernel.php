@@ -26,12 +26,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $setting = Setting::first();
+        try {
+            $setting = Setting::first();
         
-        // $start = Carbon::createFromFormat('Hi', $setting["start_time"])->format('H:i');
-        // $end = Carbon::createFromFormat('Hi', $setting["end_time"])->format('H:i');
-        // $schedule->command('remind:users')->dailyAt($start);
-        // $schedule->command('remind:users')->dailyAt($end);
+            $start = Carbon::createFromFormat('Hi', $setting["start_time"])->format('H:i');
+            $end = Carbon::createFromFormat('Hi', $setting["end_time"])->format('H:i');
+            $schedule->command('remind:users')->dailyAt($start);
+            $schedule->command('remind:users')->dailyAt($end);
+        } catch (Exception $e) {
+            \Log::info($e->getMessage());
+        }
     }
 
     /**
