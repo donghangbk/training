@@ -40,6 +40,7 @@ class RemindUsers extends Command
      */
     public function handle()
     {
+        // condition == thì không cần phải "=". chỉ cần $conditions = ["work_day", date('Y-m-d')] là được
         $conditions = [["work_day", "=", date('Y-m-d')]];
         $listEmail = User::select("email")->whereNotIn("id", function($query) use ($conditions) {
             $query->select("user_id")->from("timesheets")->where($conditions);

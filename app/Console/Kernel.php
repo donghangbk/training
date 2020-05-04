@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $setting = Setting::first();
+        // $setting = Setting::first(); // Đoạn này try catch lại nhé. vì khi compose run thì nó sẽ báo lỗi nếu chưa có database.
         
         // $start = Carbon::createFromFormat('Hi', $setting["start_time"])->format('H:i');
         // $end = Carbon::createFromFormat('Hi', $setting["end_time"])->format('H:i');

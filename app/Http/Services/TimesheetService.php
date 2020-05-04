@@ -33,8 +33,13 @@ class TimesheetService implements TimesheetServiceInterface
             "next_day" => $request["next_day"],
             "work_day" => $request["work_day"]
         ];
+        
         $timesheet = Timesheet::create($data);
 
+        // Đoạn này sử dụng relationship sẽ ổn hơn nhé.
+
+        https://laravel.com/docs/7.x/eloquent-relationships#the-save-method
+        
         if (isset($request->task)) {
             $arrDetail = [];
             foreach ($request->task as $item) {
