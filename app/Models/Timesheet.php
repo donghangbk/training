@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Timesheet extends Model {
-    protected $table = 'timesheets';
+    const TIMESHEET_WAITING = 0;
+
     protected $fillable = ['id', 'user_id', 'issue', 'next_day', 'status', 'work_day', 'created_at', 'updated_at'];
 
-    public function timesheetDetail()
+    public function tasks()
     {
         return $this->hasMany('App\Models\TimesheetDetail', 'timesheet_id', 'id');
     }

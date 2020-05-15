@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-
+use App\Models\User;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -26,13 +26,13 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // admin cannot create timesheet
-        Gate::define("admin-cant", function($user){
-            return $user->role_id != 1;
+        Gate::define("admin", function($user){
+            return $user->role_id == User::ROLE_ADMIN;
         });
 
         // user cannot create user, setting
-        Gate::define("user-cant", function($user){
-            return $user->role_id == 1;
+        Gate::define("user", function($user){
+            return $user->role_id == User::ROLE_USER;
         });
 
     }
