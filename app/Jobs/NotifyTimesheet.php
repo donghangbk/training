@@ -34,7 +34,6 @@ class NotifyTimesheet implements ShouldQueue
     {
         // list user
         $listReceiver = UserNotification::where("user_id", $this->user["userId"])->select("user_receive_id")->get();
-        
         foreach ($listReceiver as $receiverId) {
             $email = $receiverId->info->email;
             $this->sendEmail($this->user["username"], $email);

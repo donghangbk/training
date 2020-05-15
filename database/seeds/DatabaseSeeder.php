@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use App\Models\Setting;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -11,21 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
-        DB::table('roles')->insert([
-            ['name' => 'admin'],
-            ['name' => 'user']
-        ]);
 
-        DB::table('users')->insert([
+        User::create([
             'username' => 'admin',
             'email' => 'admin@gmail.com',
-            'password' => '$2y$10$meq8xtxH38GbuzFd6PoRW.dysV2Bg0Xm0KmAO0zWTdaR1KeEv40HG',
+            'password' => \Hash::make('123456789'),
             'avatar' => '/img/avatar.png',
             'role_id' => 1
         ]);
 
-        DB::table('setting')->insert([
+        Setting::create([
             'start_time' => '1700', 'end_time' => '1900'
         ]);
     }

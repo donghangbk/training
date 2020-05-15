@@ -13,10 +13,10 @@ class CreateSettingTable extends Migration
      */
     public function up()
     {
-        Schema::create('setting', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('start_time', 6);
-            $table->string('end_time', 6);
+            $table->string('start_time', 1700);
+            $table->string('end_time', 1900);
         });
     }
 
@@ -27,6 +27,6 @@ class CreateSettingTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('setting');
+        Schema::dropIfExists('settings');
     }
 }

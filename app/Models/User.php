@@ -11,7 +11,6 @@ class User extends Authenticatable
 {
     use Notifiable, SoftDeletes;
 
-    protected $table = 'users';
     protected $dates = ['deleted_at'];
 
     const ROLE_ADMIN = 1;
@@ -22,12 +21,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'id', 'username', 'email', 'password', 'address', 'birthday', 'avatar', 'role_id', 'leader', 'is_active', 'description', 'created_at', 'updated_at', 'deleted'
+        'id', 'username', 'email', 'password', 'address', 'birthday', 'avatar', 'role_id', 'leader', 'is_active', 'description', 'created_at', 'updated_at', 'deleted_at'
     ];
-
-    // protected $casts = [
-    //     'created_at' => 'datetime:m-d-Y',
-    // ];
 
     public static function boot()
     {
@@ -47,14 +42,6 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function timesheet() {
-        return $this->hasMany("App\Models\Timesheet");
-    }
-
-    public function detail() {
-        return $this->hasManyThrough('App\Models\Timesheet', 'App\Models\TimesheetDetail', 'timesheet_id','user_id', 'id', 'id');
-    }
-
     public function notifications()
     {
         return $this->hasMany('App\Models\UserNotification', 'user_id', 'id');
@@ -64,12 +51,7 @@ class User extends Authenticatable
     {
         return date("d-m-Y", strtotime($value));
     }
-
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = bcrypt($value);
-    }
-
+    
     public function scopeActive($query)
     {
         return $query->where('is_active', 1);
